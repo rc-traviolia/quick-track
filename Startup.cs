@@ -34,11 +34,12 @@ namespace QuickTrackWeb
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseNpgsql(
                     //options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))));
+                   // Configuration.GetConnectionString("DefaultConnection")));
 
             //services.AddIdentity<IdentityUser, IdentityRole<long>>(options => options.SignIn.RequireConfirmedAccount = true)
             //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
