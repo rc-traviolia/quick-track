@@ -36,7 +36,7 @@ namespace QuickTrackWeb
             // options.UseSqlServer(
 
             //Configuration.GetConnectionString("DefaultConnection")));
-#if ASPNETCORE_ENVIRONMENT == Development
+#if DEBUG
             Configuration.GetConnectionString("DefaultConnection")));
 #else
             GetPostgresqlConnectionString()));
