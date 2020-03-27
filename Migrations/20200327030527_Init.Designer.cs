@@ -10,7 +10,7 @@ using QuickTrackWeb.Data;
 namespace QuickTrackWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200326213407_Init")]
+    [Migration("20200327030527_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
