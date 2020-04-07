@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuickTrackWeb.Areas.Identity;
-using QuickTrackWeb.Data;
+using QuickTrackWeb.Services;
+using QuickTrackWeb.Services.DownloadFile;
+using System;
 
 namespace QuickTrackWeb
 {
@@ -32,8 +27,8 @@ namespace QuickTrackWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseNpgsql(
-            // options.UseSqlServer(
+             //options.UseNpgsql(
+             options.UseSqlServer(
 
             //Configuration.GetConnectionString("DefaultConnection")));
 #if DEBUG
@@ -43,11 +38,19 @@ namespace QuickTrackWeb
 #endif
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
+
+            services.AddTransient<DownloadFileService>();
+
+            //DI Broken?
+            //I want to inject these into a base class, but can't
+            //services.AddTransient<UserManager<IdentityUser>>();
+            //services.AddTransient<RoleManager<IdentityUser>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +78,11 @@ namespace QuickTrackWeb
 
             app.UseEndpoints(endpoints =>
             {
+                //For DownloadFileController
+                endpoints.MapControllerRoute(
+                   name: "default",
+                   pattern: "{controller}/{action}");
+
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");

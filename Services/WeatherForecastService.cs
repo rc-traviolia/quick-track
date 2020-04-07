@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuickTrackWeb.Data
+namespace QuickTrackWeb.Services
 {
     public class WeatherForecastService
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace QuickTrackWeb.Data
+namespace QuickTrackWeb.Services
 {
     public class WeatherForecast
     {

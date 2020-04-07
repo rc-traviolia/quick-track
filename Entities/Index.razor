@@ -1,0 +1,105 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<IdentityUser> _userManager;
+@inject RoleManager<IdentityRole> _roleManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject NavigationManager Navigation;
+
+@using Services.DownloadFile;
+@inject DownloadFileService _pdfService;
+@inject IJSRuntime JSRuntime;
+
+
+<h1>Welcome to QuickTrack</h1>
+
+<AuthorizeView>
+    <Authorized>
+        @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
+        {
+            <p>Welcome, Administrator.</p>
+            <p style="font-weight:bold">Select an option on the left to continue.</p>
+            <p style=" color:red; font-weight:bold">[NOT IMPLEMENTED] Class Maintenance: Where you maintain the categories that you are tracking and list of students to track.</p>
+            <p style=" color:red; font-weight:bold">[NOT IMPLEMENTED] Track Progress: Where you input the values that you are tracking.</p>
+            <p style=" color:red; font-weight:bold">[NOT IMPLEMENTED] View/Download Reports: Where you view and export the results of the tracking.</p>
+            <button class="btn btn-primary" @onclick="testTest">Download Pdf</button>
+            <a href="api/tpdf">Edit</a>
+        }
+        else
+        {
+            <p style="font-weight:bold">Select an option on the left to continue.</p>
+            <p>Class Maintenance: Where you maintain the categories that you are tracking and list of students to track.</p>
+            <p>Track Progress: Where you input the values that you are tracking.</p>
+            <p>View/Download Reports: Where you view and export the results of the tracking.</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p style=" color:red; font-weight:bold">
+            You must log in to use this app.
+        </p>
+    </NotAuthorized>
+</AuthorizeView>
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    public string ADMINISTRATION_ROLE = "Administrators";
+    System.Security.Claims.ClaimsPrincipal CurrentUser;
+    public bool IsAuthorized = false;
+
+    //FOR PDF START
+    string currentUser = "none";
+    string noteContent;
+    string fileName = "note.pdf";
+    //FOR PDF END
+
+    protected override async Task OnInitializedAsync()
+    {
+        // ensure there is a ADMINISTRATION_ROLE
+        var RoleResult = await _roleManager.FindByNameAsync(ADMINISTRATION_ROLE);
+        if (RoleResult == null)
+        {
+            // Create ADMINISTRATION_ROLE Role
+            await _roleManager.CreateAsync(new IdentityRole(ADMINISTRATION_ROLE));
+        }
+        // Ensure a user named Admin@BlazorHelpWebsite.com is an Administrator
+        var user = await _userManager.FindByNameAsync("rc-traviolia@wiu.edu");
+        if (user != null)
+        {
+            // Is Admin@BlazorHelpWebsite.com in administrator role?
+            var UserResult = await _userManager.IsInRoleAsync(user, ADMINISTRATION_ROLE);
+            if (!UserResult)
+            {
+                // Put admin in Administrator role
+                await _userManager.AddToRoleAsync(user, ADMINISTRATION_ROLE);
+            }
+        }
+        // Get the current logged in user
+        CurrentUser = (await authenticationStateTask).User;
+
+        currentUser = CurrentUser.Identity.Name;
+    }
+
+    public async void testTest()
+    {
+        fileName = "testme.zip";
+        var byteContent = _pdfService.TestMethod();
+        await JSRuntime.InvokeAsync<object>(
+            "Test",
+            fileName,
+            byteContent
+        // noteContent
+        );
+    }
+    public async void testPdf()
+    {
+        var byteContent = _pdfService.GetPdfMemoryStream(currentUser);
+        await JSRuntime.InvokeAsync<object>(
+            "PdfSaveAs",
+            fileName,
+            byteContent
+        // noteContent
+        );
+
+    }
+}

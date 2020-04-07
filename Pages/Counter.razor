@@ -1,5 +1,25 @@
 ﻿@page "/counter"
 
+<AuthorizeView>
+    <Authorized>
+        @foreach (var role in @context.User.Identities)
+        {
+            <div>@role.Name</div>
+        }
+        <br />
+        @if (@context.User.IsInRole(ADMINISTRATION_ROLE))
+        {
+            <p>You are in @ADMINISTRATION_ROLE </p>
+        }
+        else
+        {
+            <p>You're not signed in as a user in @ADMINISTRATION_ROLE.</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You're not loggged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
@@ -8,6 +28,7 @@
 
 @code {
     private int currentCount = 0;
+    public string ADMINISTRATION_ROLE = "Administrators";
 
     private void IncrementCount()
     {
