@@ -13,25 +13,25 @@ namespace QuickTrackWeb.Services.DownloadFile
     public class DownloadFileService
     {
 
-        public byte[] TestMethod()
+        public byte[] BuildZipFileBytes()
         {
-        List<ZipItem> zipItems = new List<ZipItem>();
+            List<ZipItem> zipItems = new List<ZipItem>();
 
-        zipItems.Add(new ZipItem("one.pdf", GetPdfMemoryStream("one.pdf")));
-        zipItems.Add(new ZipItem("two.pdf", GetPdfMemoryStream("two.pdf")));
-        zipItems.Add(new ZipItem("three.pdf", GetPdfMemoryStream("three.pdf")));
+            zipItems.Add(new ZipItem("one.pdf", BuildSingleStudentReport("one.pdf")));
+            zipItems.Add(new ZipItem("two.pdf", BuildSingleStudentReport("two.pdf")));
+            zipItems.Add(new ZipItem("three.pdf", BuildSingleStudentReport("three.pdf")));
 
-        using (MemoryStream memoryStream = new MemoryStream())
-        {
-            Zipper.Zip(zipItems).CopyTo(memoryStream);
-            var bytes = memoryStream.ToArray();
-            return bytes;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                Zipper.Zip(zipItems).CopyTo(memoryStream);
+                var bytes = memoryStream.ToArray();
+                return bytes;
+            }
+
+
+
         }
-
-
-
-    }
-        public byte[] GetPdfMemoryStream(string userName)
+        public byte[] BuildSingleStudentReport(string userName)
         {
 
 
@@ -76,37 +76,6 @@ namespace QuickTrackWeb.Services.DownloadFile
 
             }
         }
-        public byte[] WritePdfToDisk(string userName)
-        {
-            Document document = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
-            //Document document = new Document();
-            document.AddAuthor($"{userName}");
-            document.AddCreator("QuickTrack - By: Richard Traviolia");
-            document.AddKeywords("PDF tutorial education");
-            document.AddSubject("Document subject - Describing the steps creating a PDF document");
-            document.AddTitle("The document title - PDF creation using iTextSharp");
-
-            byte[] pdfBytes;
-            using (var mem = new MemoryStream())
-            {
-                using (PdfWriter wri = PdfWriter.GetInstance(document, mem))
-                {
-                    document.Open();//Open Document to write
-                    Paragraph paragraph = new Paragraph("This is my first line using Paragraph.");
-                    Phrase phrase = new Phrase("This is my second line using Pharse.");
-                    Chunk chunk = new Chunk(" This is my third line using Chunk.");
-
-                    document.Add(paragraph);
-
-                    document.Add(phrase);
-
-                    document.Add(chunk);
-                }
-                pdfBytes = mem.ToArray();
-            }
-
-            return pdfBytes;
-
-        }
+       
     }
 }

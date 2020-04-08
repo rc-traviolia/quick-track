@@ -1,18 +1,47 @@
 ﻿@page "/classmaintenance"
 @using Microsoft.AspNetCore.Identity
+@using Entities
+@using Services
+@inject IQuickTrackRepository _quickTrackRepository
 
 <h1>Class Maintenance</h1>
 
-<p>Current count: @currentCount</p>
+<p>Class Name: @tempname</p>
+
+@if(@tempname == "-no class found-")
+{
+<button class="btn btn-primary" @onclick="CreateClass">Create Class</button>
+}
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
+
+    private string tempname = "-no class found-";
+    private ClassEntity pickedClassEntity;
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
     }
+    private void CreateClass()
+    {
+        tempname = "NOW IT HAS A NAME!";
+        //create class
+        //load class
+        //etc
+    }
+    public void Class_Maintenance()
+    {
+        pickedClassEntity = _quickTrackRepository.GetClassEntity("rc-traviolia@dotfoods.com");
+        @if (pickedClassEntity != null)
+        {
+            tempname = pickedClassEntity.Name;
+        }
 
-}
+
+
+
+        }
+    }

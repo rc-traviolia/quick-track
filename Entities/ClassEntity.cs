@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuickTrackWeb.Entities
@@ -13,7 +14,12 @@ namespace QuickTrackWeb.Entities
         public string Name { get; set; }
 
         [Required]
-        public ClassEntity OwnerIdentityName { get; set; }
+        public string OwnerIdentityName { get; set; }
+
+        public List<Week> Weeks {get; set;}
+        public List<Student> Students { get; set; }
+        public List<TrackedItem> TrackedItems { get; set; }
+        public List<ProgressRecord> ProgressRecords { get; set; }
 
 
     }

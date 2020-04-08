@@ -46,6 +46,7 @@ namespace QuickTrackWeb
             services.AddSingleton<WeatherForecastService>();
 
             services.AddTransient<DownloadFileService>();
+            services.AddScoped<IQuickTrackRepository, DefaultQuickTrackRepository>();
 
             //DI Broken?
             //I want to inject these into a base class, but can't

@@ -83,7 +83,7 @@
     public async void testTest()
     {
         fileName = "testme.zip";
-        var byteContent = _pdfService.TestMethod();
+        var byteContent = _pdfService.BuildZipFileBytes();
         await JSRuntime.InvokeAsync<object>(
             "Test",
             fileName,
@@ -93,7 +93,7 @@
     }
     public async void testPdf()
     {
-        var byteContent = _pdfService.GetPdfMemoryStream(currentUser);
+        var byteContent = _pdfService.BuildSingleStudentReport(currentUser);
         await JSRuntime.InvokeAsync<object>(
             "PdfSaveAs",
             fileName,

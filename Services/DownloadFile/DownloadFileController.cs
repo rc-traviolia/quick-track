@@ -40,7 +40,7 @@ namespace QuickTrackWeb.Services.DownloadFile
         {
             if(name == "tpdf")
             {
-                var buffer = _pdfService.GetPdfMemoryStream("notarealusername@not.real");// Encoding.UTF8.GetBytes("Hello! Content is here.");
+                var buffer = _pdfService.BuildSingleStudentReport("notarealusername@not.real");// Encoding.UTF8.GetBytes("Hello! Content is here.");
                 var stream = new MemoryStream(buffer);
                 //var stream = new FileStream(filename);
 
