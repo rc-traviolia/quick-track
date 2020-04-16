@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using QuickTrackWeb.Services.StudentDataService;
+@using QuickTrackWeb.Shared.Models;
+@using System.Threading.Tasks;
+@inject IStudentDataService _studentDataService
+
+@if (ShowDialog)
+{
+    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog" style="color:black">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titleLabel">Please Confirm Deletion of @studentToDelete.Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <EditForm Model="@studentToDelete" OnValidSubmit="@HandleValidSubmit">
+
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <button type="submit" class="btn red-button">Delete</button>
+                        <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    public bool ShowDialog { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CloseEventCallback { get; set; }
+
+    protected StudentWithoutRecordsDto studentToDelete { get; set; }
+
+
+    public void Show(StudentWithoutRecordsDto inputStudent)
+    {
+        studentToDelete = inputStudent;
+        ResetDialog();
+        ShowDialog = true;
+        StateHasChanged();
+    }
+
+    private async void ResetDialog()
+    {
+        //there isn't anything to reset
+    }
+
+    public void Close()
+    {
+        ShowDialog = false;
+        StateHasChanged();
+    }
+
+    protected async Task HandleValidSubmit()
+    {
+        await _studentDataService.DeleteStudent(studentToDelete.Id);
+        ShowDialog = false;
+
+        await CloseEventCallback.InvokeAsync(true);
+        StateHasChanged();
+    }
+
+
+
+}

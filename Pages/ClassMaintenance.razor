@@ -1,47 +1,44 @@
 ﻿@page "/classmaintenance"
-@using Microsoft.AspNetCore.Identity
-@using Entities
-@using Services
-@inject IQuickTrackRepository _quickTrackRepository
+@inherits ClassMaintenanceBase
 
-<h1>Class Maintenance</h1>
 
-<p>Class Name: @tempname</p>
-
-@if(@tempname == "-no class found-")
+@if (PickedClassEntity == null)
 {
-<button class="btn btn-primary" @onclick="CreateClass">Create Class</button>
+    <p>Loading...</p>
 }
+else
+{
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-@code {
-
-    private string tempname = "-no class found-";
-    private ClassEntity pickedClassEntity;
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    @if (PickedClassEntity.Id == -1)
     {
-        currentCount++;
+        <h1 style="color:red">@PickedClassEntity.Name</h1>
+        <button class="btn btn-primary" @onclick="@AddClassEntity">Create Class</button>
+        <AddClassEntityDialog @ref="AddClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddClassEntityDialog>
     }
-    private void CreateClass()
+    else
     {
-        tempname = "NOW IT HAS A NAME!";
-        //create class
-        //load class
-        //etc
+        <h1 style="color:green">@PickedClassEntity.Name</h1>
+
+        <StudentListDisplay classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName"></StudentListDisplay>
+
+
+        <AuthorizeView>
+            <Authorized>
+                @if (@context.User.IsInRole("Administrator") == false)
+                {
+                    <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
+                    <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
+                }
+            </Authorized>
+        </AuthorizeView>
+
     }
-    public void Class_Maintenance()
-    {
-        pickedClassEntity = _quickTrackRepository.GetClassEntity("rc-traviolia@dotfoods.com");
-        @if (pickedClassEntity != null)
+
+    <ul>
+        @foreach (var c in ClassEntities)
         {
-            tempname = pickedClassEntity.Name;
+            <li>@c.Name -> @c.OwnerIdentityName</li>
         }
-
-
-
-
-        }
-    }
+    </ul>
+}

@@ -16,13 +16,14 @@ namespace QuickTrackWeb.Services.DownloadFile
  
     public class DownloadFileController : Controller
     {
-        public IHostingEnvironment _hostingEnvironment;
+        //Changed from IHostingEnvironment
+        public IWebHostEnvironment _webHostEnvironment;
         public DownloadFileService _pdfService;
         // GET: /<controller>/
 
-        public DownloadFileController(IHostingEnvironment hostingEnvironment, DownloadFileService pdfService)
+        public DownloadFileController(IWebHostEnvironment webHostEnvironment, DownloadFileService pdfService)
         {
-            _hostingEnvironment = hostingEnvironment;
+            _webHostEnvironment = webHostEnvironment;
             _pdfService = pdfService;
         }
         public IActionResult Index()

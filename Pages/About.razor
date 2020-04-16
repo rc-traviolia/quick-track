@@ -1,0 +1,38 @@
+﻿@page "/about"
+
+<h1>About this site</h1>
+<br />
+<h4>Why does it exist?</h4>
+<p>
+    With the onset of the COVID-19 pandemic, Richard Traviolia's wife, Michelle, had to begin teaching her 1st Grade class remotely. She
+    had an idea to help with parental engagement, that she could take her students time spent on different activies each day (which was 
+    already tracked where only the teacher could see it online, by the applications they use) and put them into reports to send home to
+    their parents each week.
+</p>
+<p>
+    Richard, an aspiring programmer, decided to take full advantage of the opportunity to hone his skills by developing a web application that could
+    help make that job both quick and simple.
+</p>
+<br />
+<h4>About the Author</h4>
+<p>Richard is a self-taught programmer that thought it would be a good idea to get his Bachelor's Degree in a field he though was fascinating,
+    but really had no intention of pursuing a career in, Anthropology. He was too interested in settling down and raising a family to want the
+    real-life version of Indiana Jones, but "a degree is a degree" and so he went ahead and carried on.</p>
+<br />
+<h4>Technology Used</h4>
+<ul>
+    <li>Blazor Server-Side</li>
+    <li>Entity Framework Core</li>
+    <li></li>
+</ul>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

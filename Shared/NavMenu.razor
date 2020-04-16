@@ -1,14 +1,21 @@
 ﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">QuickTrack</a>
+    <img class="sitelogo" src="images/test.png"/>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
+<br/>
+<br/>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <AuthorizeView>
             <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="#">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="classmaintenance">
                         <span class="oi oi-wrench" aria-hidden="true"></span> Class Settings
@@ -17,6 +24,11 @@
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="trackprogress">
                         <span class="oi oi-list" aria-hidden="true"></span> Track Progress
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="downloadreports">
+                        <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Get Reports
                     </NavLink>
                 </li>
             </Authorized>

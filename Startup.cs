@@ -8,8 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuickTrackWeb.Areas.Identity;
 using QuickTrackWeb.Services;
+using QuickTrackWeb.Services.ClassEntityDataService;
 using QuickTrackWeb.Services.DownloadFile;
+using QuickTrackWeb.Components;
 using System;
+using QuickTrackWeb.Services.StudentDataService;
 
 namespace QuickTrackWeb
 {
@@ -40,13 +43,24 @@ namespace QuickTrackWeb
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
+
+            services.AddHttpClient<IClassEntityDataService, DefaultClassEntityDataService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44369/");
+            });
+            services.AddHttpClient<IStudentDataService, DefaultStudentDataService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44369/");
+            });
+
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
 
             services.AddTransient<DownloadFileService>();
-            services.AddScoped<IQuickTrackRepository, DefaultQuickTrackRepository>();
+            
+            services.AddScoped<SessionDataService>();
 
             //DI Broken?
             //I want to inject these into a base class, but can't

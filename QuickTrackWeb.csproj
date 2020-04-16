@@ -1,21 +1,45 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-QuickTrackWeb-C1742989-8ECA-419F-B736-A1A94CA7010F</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="QuickTrackWeb.Api\**" />
+    <Content Remove="QuickTrackWeb.Api\**" />
+    <EmbeddedResource Remove="QuickTrackWeb.Api\**" />
+    <None Remove="QuickTrackWeb.Api\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\css\bookshelf.jpg" />
+    <Content Remove="wwwroot\images\bookshelf.jpg" />
+    <Content Remove="wwwroot\images\brand-dropshadow-left.png" />
+    <Content Remove="wwwroot\images\chalkboard.jpg" />
+    <Content Remove="wwwroot\images\QTBrand.png" />
+    <Content Remove="wwwroot\images\wood-full.jpg" />
     <Content Remove="wwwroot\SaveFile.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="wwwroot\images\brand-dropshadow-left.png" />
+    <EmbeddedResource Include="wwwroot\images\chalkboard.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\images\bookshelf.jpg" />
+    <EmbeddedResource Include="wwwroot\images\QTBrand.png" />
+    <EmbeddedResource Include="wwwroot\images\wood-full.jpg" />
     <EmbeddedResource Include="wwwroot\SaveFile.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
@@ -23,9 +47,30 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.2" />
     <PackageReference Include="NpgSql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.1" />
     <PackageReference Include="SharpZipLib" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\bookshelf.jpg" />
+    <None Include="wwwroot\images\chalkboard.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
