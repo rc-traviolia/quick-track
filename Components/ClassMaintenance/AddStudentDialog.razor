@@ -17,13 +17,13 @@
                 </div>
                 <div class="modal-body">
 
-                    <EditForm Model="@StudentName" OnValidSubmit="@HandleValidSubmit">
+                    <EditForm Model="@StudentToCreate" OnValidSubmit="@HandleValidSubmit">
 
                         <DataAnnotationsValidator />
                         <div class="form-group">
                             <label for="lastName">Student Name: </label>
-                            <InputText id="name" class="form-control" @bind-Value="@StudentName.Value" placeholder="student's name"></InputText>
-                            <ValidationMessage For="@(() => StudentName.Value)" />
+                            <InputText id="name" class="form-control" @bind-Value="@StudentToCreate.Name" placeholder="student's name"></InputText>
+                            <ValidationMessage For="@(() => StudentToCreate.Name)" />
                         </div>
 
                         <button type="submit" class="btn btn-primary">Create</button>
@@ -56,7 +56,7 @@
 
     private async void ResetDialog()
     {
-        StudentName = new RequiredString();
+        //StudentName = new RequiredString();
         StudentToCreate = new StudentForCreationDto();
     }
 
@@ -68,7 +68,7 @@
 
     protected async Task HandleValidSubmit()
     {
-        StudentToCreate.Name = StudentName.Value;
+        //StudentToCreate.Name = StudentName.Value;
         await _studentDataService.AddStudent(OwnerIdentityName, StudentToCreate);
         ShowDialog = false;
 

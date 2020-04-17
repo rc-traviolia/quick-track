@@ -2,27 +2,50 @@
 
 
 h1 {
+    margin-top: -15px;
     font-size: 3.75rem;
     font-family: 'Chalkboard-header';
 }
-.student-list-area{
+
+.display-space {
+    min-height: 100%;
+    /* Equal to height of footer */
+    /* But also accounting for potential margin-bottom of last child */
+    /*https://css-tricks.com/couple-takes-sticky-footer/*/
+    margin-bottom: -50px;
+}
+.footer,
+.push {
+    height: 50px;
+}
+
+.display-spacer {
+    float:left; 
+    width:3%; 
+    height:1px;
+}
+
+.student-display-area {
+    width: 40%;
+    min-width: 500px;
+    float: left;
+}
+.trackeditem-display-area{
     width: 40%;
     min-width:500px;
+    float:left;
 }
-    .student-list{
-        list-style:none;
-        padding-left:0px;
-    }
-        .student-list-header{
-            height:4rem;
-            padding-right:10px;
-            border-bottom: 2px solid white;
-        }
-        .student-list-item {
-            margin: 10px;
-            height:auto;
-        }
-        .header-text {
+    .display-list {
+    list-style: none;
+    padding-left: 0px;
+}
+    .display-list .display-list-header {
+    height: 4rem;
+    padding-right: 10px;
+    border-bottom: 2px solid white;
+}
+        
+       .display-list .display-list-header .header-text {
             float: left;
             width: 80%;
             box-sizing: border-box;
@@ -30,22 +53,26 @@ h1 {
             padding-left: 10px;
             font-family: Chalkboard-header;
         }
-        .header-button {
+        .display-list .display-list-header .header-button {
             margin-top: 20px;
             box-sizing: border-box;
             width: 20%;
         }
-            .item-text {
-                float: left;
-                width: 80%;
-                box-sizing: border-box;
-                padding-left: 10px;
-                font-size: 1.5rem
-            }
-.item-button {
-    width: 20%;
-    box-sizing: border-box;
-}
+    .display-list .display-list-item {
+        margin: 10px;
+        height: auto;
+    }
+         .display-list .display-list-item .item-text {
+            float: left;
+            width: 80%;
+            box-sizing: border-box;
+            padding-left: 10px;
+            font-size: 1.5rem
+        }
+         .display-list .display-list-item .item-button {
+            width: 20%;
+            box-sizing: border-box;
+        }
 .sitelogo {
         position: relative;
         left: -10px;

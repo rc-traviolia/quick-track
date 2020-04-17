@@ -34,9 +34,9 @@ namespace QuickTrackWeb.Services.StudentDataService
         {
             await _httpClient.DeleteAsync($"api/classentities/students/{studentId}");
         }
-        public async Task<IEnumerable<StudentWithoutRecordsDto>> GetStudentsForClass(string classEntityOwnerIdentityName)
+        public async Task<IEnumerable<StudentWithoutProgressDto>> GetStudentsForClass(string classEntityOwnerIdentityName)
         {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<StudentWithoutRecordsDto>>
+            return await JsonSerializer.DeserializeAsync<IEnumerable<StudentWithoutProgressDto>>
                     (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/students"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 

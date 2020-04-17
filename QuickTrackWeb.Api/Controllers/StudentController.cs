@@ -38,7 +38,7 @@ namespace QuickTrackWeb.Api.Controllers
             }
 
             //var results = new List<CityWithoutPointsOfInterestDto>();
-            var results = _mapper.Map<IEnumerable<StudentWithoutRecordsDto>>(students);
+            var results = _mapper.Map<IEnumerable<StudentWithoutProgressDto>>(students);
 
 
             return Ok(results);

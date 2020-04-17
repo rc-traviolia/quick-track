@@ -9,7 +9,7 @@ namespace QuickTrackWeb.Services.StudentDataService
         //Task<ClassEntityDto> GetClassEntity(string loggedInUserName);
         //Task<ClassEntityDto> AddClassEntity(ClassEntityForCreationDto newClassEntity);C:\Users\richard.traviolia\quick-track\Services\StudentDataService\IStudentDataService.cs
         //Task UpdateClassEntity(ClassEntityForUpdateDto updatedClassEntity);
-        Task<IEnumerable<StudentWithoutRecordsDto>> GetStudentsForClass(string classEntityOwnerIdentityName);
+        Task<IEnumerable<StudentWithoutProgressDto>> GetStudentsForClass(string classEntityOwnerIdentityName);
         Task<StudentDto> AddStudent(string classEntityOwnerIdentityName, StudentForCreationDto studentToAdd);
         Task DeleteStudent(int studentId);
     }

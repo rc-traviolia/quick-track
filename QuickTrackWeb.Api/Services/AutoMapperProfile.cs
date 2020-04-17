@@ -19,7 +19,7 @@ namespace QuickTrackWeb.Api.Services
             CreateMap<ClassEntityForCreationDto, ClassEntity>();
 
             CreateMap<Student, StudentDto>();
-            CreateMap<Student, StudentWithoutRecordsDto>();
+            CreateMap<Student, StudentWithoutProgressDto>();
             CreateMap<StudentForCreationDto, Student>();
 
             //EXAMPLE:

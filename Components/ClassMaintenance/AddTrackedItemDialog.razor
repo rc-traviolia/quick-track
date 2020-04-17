@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using QuickTrackWeb.Services.TrackedItemDataService;
+@using QuickTrackWeb.Shared.Models;
+@using System.Threading.Tasks;
+@inject ITrackedItemDataService _trackedItemDataService
+
+@if (ShowDialog)
+{
+    <div class="modal fade show d-block"  tabindex="-1" role="dialog" style="color:black">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create a New Tracked Item:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <EditForm Model="@trackedItemToCreate" OnValidSubmit="@HandleValidSubmit">
+                        <div class="form-group">
+                            <label for="lastName">Last name: </label>
+                            <InputText id="lastName" class="form-control" @bind-Value="@trackedItemToCreate.Name" placeholder="Enter last name"></InputText>
+                            <ValidationMessage For="@(() => @trackedItemToCreate.Name)" />
+                        </div>
+                        @*<div class="form-group">
+            <label for="lastName">Last name: </label>
+            <InputText id="lastName" class="form-control" @bind-Value="@Employee.LastName" placeholder="Enter last name"></InputText>
+            <ValidationMessage For="@(() => Employee.LastName)" />
+        </div>
+
+        <div class="form-group">
+            <label for="firstName">First name: </label>
+            <InputText id="firstName" class="form-control" @bind-Value="@Employee.FirstName" placeholder="Enter first name"></InputText>
+            <ValidationMessage For="@(() => Employee.FirstName)" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email: </label>
+            <InputText id="email" class="form-control" @bind-Value="@Employee.Email" placeholder="Enter email"></InputText>
+            <ValidationMessage For="@(() => Employee.Email)" />
+        </div>
+        <button type="submit" class="btn btn-primary blue-button">Save employee</button>
+        <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>*@
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    public bool ShowDialog { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CloseEventCallback { get; set; }
+
+    protected TrackedItemForCreationDto trackedItemToCreate { get; set; }
+    protected string OwnerIdentityName;
+
+    public void Show(string ownerIdentityName)
+    {
+        OwnerIdentityName = ownerIdentityName;
+        ShowDialog = true;
+        StateHasChanged();
+
+    }
+
+    public void ResetDialog()
+    {
+        trackedItemToCreate = new TrackedItemForCreationDto();
+    }
+
+
+    public void Close()
+    {
+        ShowDialog = false;
+        StateHasChanged();
+    }
+
+    protected async Task HandleValidSubmit()
+    {
+        await _trackedItemDataService.AddTrackedItem(OwnerIdentityName, trackedItemToCreate);
+        ShowDialog = false;
+
+        await CloseEventCallback.InvokeAsync(true);
+        StateHasChanged();
+    }
+
+
+}

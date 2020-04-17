@@ -21,15 +21,21 @@ else
         <h1 style="color:green">@PickedClassEntity.Name</h1>
 
         <StudentListDisplay classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName"></StudentListDisplay>
+        <div class="display-spacer"></div>
+        <TrackedItemDisplay classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName"></TrackedItemDisplay>
 
 
         <AuthorizeView>
             <Authorized>
-                @if (@context.User.IsInRole("Administrator") == false)
-                {
-                    <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
-                    <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
-                }
+                <div class="footer-display-area">
+                    @if (@context.User.IsInRole("Administrator") == false)
+                    {
+                        <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
+                        <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
+                    }
+
+                </div>
+               
             </Authorized>
         </AuthorizeView>
 

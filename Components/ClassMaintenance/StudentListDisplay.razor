@@ -2,9 +2,9 @@
 @using QuickTrackWeb.Components.ClassMaintenance;
 @inject IStudentDataService _studentDataService;
 
-    <div class="student-list-area">
-        <ul class="student-list">
-            <li class="student-list-header" style="color:white">
+    <div class="student-display-area">
+        <ul class="display-list">
+            <li class="display-list-header" style="color:white">
                 @if (StudentList != null)
                 {
                     <div class="header-text">Students (@StudentList.Count() Total) </div>
@@ -22,17 +22,19 @@
                     <AddStudentDialog @ref="addStudentDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddStudentDialog>
                 }
             </li>
-            @if (StudentList != null)
+        @if (StudentList != null)
+        {
+
+            @foreach (var student in StudentList)
             {
+                var studentToDelete = student;
 
-                @foreach (var student in StudentList)
-                {
-                    var studentToDelete = student;
-        <li class="student-list-item">
-           <div class="item-text">@student.Name</div>
-            <button class="oi-oi-delete red-button item-button" @onclick="@(e => deleteStudentDialog.Show(studentToDelete))">Remove</button>
-            <DeleteStudentDialog @ref="deleteStudentDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteStudentDialog>
-
+        <li class="display-list-item">
+            <div class="item-text">
+                @student.Name
+            </div>
+                <button class="oi-oi-delete red-button item-button" @onclick="@(e => deleteStudentDialog.Show(studentToDelete))">Remove</button>
+                <DeleteStudentDialog @ref="deleteStudentDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteStudentDialog>
         </li>
                    
 
@@ -49,9 +51,10 @@
     [Parameter]
     public string classEntityOwnerIdentityName { get; set; }
 
-    protected IEnumerable<StudentWithoutRecordsDto> StudentList;
+    protected IEnumerable<StudentWithoutProgressDto> StudentList;
 
     protected DeleteStudentDialog deleteStudentDialog { get; set; }
+
     protected AddStudentDialog addStudentDialog { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -60,20 +63,7 @@
         StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));
 
     }
-    //public async void AddStudent()
-    //{
-    //    StudentForCreationDto newStudent = new StudentForCreationDto();
-    //    newStudent.Name = "testkid";
-    //    await _studentDataService.AddStudent(classEntityOwnerIdentityName, newStudent);
-    //    StateHasChanged();
-    //}
-    //public async void DeleteStudent(int studentId)
-    //{
-    //    //button that called this: <button class="oi-delete red-button" @onclick="@(e => _deleteStudentDialog.Show(studentToDelete))">Remove</button>
-    //    await _studentDataService.DeleteStudent(studentId);
-    //    StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));
-    //    StateHasChanged();
-    //}
+
     public async void Dialog_OnDialogClose()
     {
         StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));

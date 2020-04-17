@@ -4,7 +4,7 @@ using System.Text;
 
 namespace QuickTrackWeb.Shared.Models
 {
-    public class StudentWithoutRecordsDto
+    public class StudentWithoutProgressDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

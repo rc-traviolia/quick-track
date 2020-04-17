@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components;
-@using QuickTrackWeb.Services.StudentDataService;
+@using QuickTrackWeb.Services.TrackedItemDataService;
 @using QuickTrackWeb.Shared.Models;
 @using System.Threading.Tasks;
-@inject IStudentDataService _studentDataService
+@inject ITrackedItemDataService _trackedItemDataService
 
 @if (ShowDialog)
 {
@@ -10,14 +10,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Please Confirm Deletion of @studentToDelete.Name</h5>
+                    <h5 class="modal-title">Please Confirm Deletion of @trackedItemToDelete.Name</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
 
-                    <EditForm Model="@studentToDelete" OnValidSubmit="@HandleValidSubmit">
+                    <EditForm Model="@trackedItemToDelete" OnValidSubmit="@HandleValidSubmit">
                         <button type="submit" class="btn red-button">Delete</button>
                         <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>
                     </EditForm>
@@ -34,16 +34,14 @@
     [Parameter]
     public EventCallback<bool> CloseEventCallback { get; set; }
 
-    protected StudentWithoutProgressDto studentToDelete { get; set; }
+    protected TrackedItemWithoutProgressDto trackedItemToDelete { get; set; }
 
 
-    public void Show(StudentWithoutProgressDto inputStudent)
+    public void Show(TrackedItemWithoutProgressDto trackedItem)
     {
-        studentToDelete = inputStudent;
+        trackedItemToDelete = trackedItem;
         ShowDialog = true;
         StateHasChanged();
-
-        System.Diagnostics.Debug.Print($"RAWR: {ShowDialog}");
     }
 
 
@@ -55,13 +53,12 @@
 
     protected async Task HandleValidSubmit()
     {
-        await _studentDataService.DeleteStudent(studentToDelete.Id);
+        await _trackedItemDataService.DeleteTrackedItem(trackedItemToDelete.Id);
         ShowDialog = false;
 
         await CloseEventCallback.InvokeAsync(true);
         StateHasChanged();
     }
-
 
 
 }

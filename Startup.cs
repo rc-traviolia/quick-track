@@ -9,10 +9,13 @@ using Microsoft.Extensions.Hosting;
 using QuickTrackWeb.Areas.Identity;
 using QuickTrackWeb.Services;
 using QuickTrackWeb.Services.ClassEntityDataService;
+using QuickTrackWeb.Services.StudentDataService;
+using QuickTrackWeb.Services.TrackedItemDataService;
+using QuickTrackWeb.Services.WeekDataService;
 using QuickTrackWeb.Services.DownloadFile;
 using QuickTrackWeb.Components;
 using System;
-using QuickTrackWeb.Services.StudentDataService;
+
 
 namespace QuickTrackWeb
 {
@@ -47,6 +50,8 @@ namespace QuickTrackWeb
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
+
+
             services.AddHttpClient<IClassEntityDataService, DefaultClassEntityDataService>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:44369/");
@@ -55,6 +60,16 @@ namespace QuickTrackWeb
             {
                 client.BaseAddress = new Uri("https://localhost:44369/");
             });
+            services.AddHttpClient<ITrackedItemDataService, DefaultTrackedItemDataService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44369/");
+            });
+            services.AddHttpClient<IWeekDataService, DefaultWeekDataService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44369/");
+            });
+
+
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 

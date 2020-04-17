@@ -1,0 +1,86 @@
+﻿@using QuickTrackWeb.Services.TrackedItemDataService;
+@using QuickTrackWeb.Components.ClassMaintenance;
+@inject ITrackedItemDataService _trackedItemDataService
+
+    <div class="trackeditem-display-area">
+        <ul class="display-list">
+            <li class="display-list-header" style="color:white">
+                @if (TrackedItemList != null)
+                {
+                    <div class="header-text">Students (@TrackedItemList.Count() Total) </div>
+                }
+                else
+                {
+                    <div class="header-text">Students (0 Total) </div>
+                }
+
+
+                @{
+                    var ownerIdentityName = classEntityOwnerIdentityName;
+
+                    <button class="oi-oi-plus blue-button header-button" @onclick="@(e => addTrackedItemDialog.Show(ownerIdentityName))">Add</button>
+                    <AddTrackedItemDialog @ref="addTrackedItemDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddTrackedItemDialog>
+                }
+            </li>
+            @if (TrackedItemList != null)
+            {
+
+                @foreach (var trackedItem in TrackedItemList)
+                {
+                    var trackedItemToDelete = trackedItem;
+        <li class="display-list-item">
+            <div class="item-text">@trackedItem.Name</div>
+            <div class="">@trackedItem.DailyTarget</div>
+            <div class=""> @trackedItem.UnitOfMeasure</div>
+
+            <button class="oi-oi-delete red-button item-button" @onclick="@(e => deleteTrackedItemDialog.Show(trackedItemToDelete))">Remove</button>
+            <DeleteTrackedItemDialog @ref="deleteTrackedItemDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteTrackedItemDialog>
+
+        </li>
+                   
+
+                    
+
+                }
+            }
+
+
+        </ul>
+    </div>
+
+@code {
+    [Parameter]
+    public string classEntityOwnerIdentityName { get; set; }
+
+    protected IEnumerable<TrackedItemWithoutProgressDto> TrackedItemList;
+
+    protected DeleteTrackedItemDialog deleteTrackedItemDialog { get; set; }
+    protected AddTrackedItemDialog addTrackedItemDialog { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        TrackedItemList = (await _trackedItemDataService.GetTrackedItemsForClass(classEntityOwnerIdentityName));
+
+    }
+    //public async void AddStudent()
+    //{
+    //    StudentForCreationDto newStudent = new StudentForCreationDto();
+    //    newStudent.Name = "testkid";
+    //    await _studentDataService.AddStudent(classEntityOwnerIdentityName, newStudent);
+    //    StateHasChanged();
+    //}
+    //public async void DeleteStudent(int studentId)
+    //{
+    //    //button that called this: <button class="oi-delete red-button" @onclick="@(e => _deleteStudentDialog.Show(studentToDelete))">Remove</button>
+    //    await _studentDataService.DeleteStudent(studentId);
+    //    StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));
+    //    StateHasChanged();
+    //}
+    public async void Dialog_OnDialogClose()
+    {
+        TrackedItemList = (await _trackedItemDataService.GetTrackedItemsForClass(classEntityOwnerIdentityName));
+        StateHasChanged();
+    }
+
+}
