@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using QuickTrackWeb.Api.Repository;
+using QuickTrackWeb.EmbeddedApi.Repository;
 using QuickTrackWeb.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuickTrackWeb.Api.Controllers
+namespace QuickTrackWeb.EmbeddedApi.Controllers
 {
     [Route("api/classentities")]
-    public class StudentController : Controller
+    public class EmbeddedStudentController : Controller
     {
-        private ILogger<StudentController> _logger;
-        private IQuickTrackApiRepository _repo;
+        private ILogger<EmbeddedStudentController> _logger;
+        private IQuickTrackEmbeddedApiRepository _repo;
         private IMapper _mapper;
-        public StudentController(
-            ILogger<StudentController> logger,
-            IQuickTrackApiRepository repo,
+        public EmbeddedStudentController(
+            ILogger<EmbeddedStudentController> logger,
+            IQuickTrackEmbeddedApiRepository repo,
             IMapper mapper)
         {
             _logger = logger;

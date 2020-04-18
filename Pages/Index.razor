@@ -8,7 +8,7 @@
 @inject NavigationManager Navigation;
 
 @using Services.DownloadFile;
-@inject DownloadFileService _pdfService;
+@inject DownloadFileService _downloadFileService;
 @inject IJSRuntime JSRuntime;
 
 
@@ -90,7 +90,7 @@
     public async void testTest()
     {
         fileName = "testme.zip";
-        var byteContent = _pdfService.BuildZipFileBytes();
+        var byteContent = _downloadFileService.BuildZipFileBytes();
         await JSRuntime.InvokeAsync<object>(
             "Test",
             fileName,
@@ -100,7 +100,7 @@
     }
     public async void testPdf()
     {
-        var byteContent = _pdfService.BuildSingleStudentReport(currentUser);
+        var byteContent = _downloadFileService.BuildSingleStudentReport(currentUser);
         await JSRuntime.InvokeAsync<object>(
             "PdfSaveAs",
             fileName,

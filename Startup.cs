@@ -13,9 +13,12 @@ using QuickTrackWeb.Services.StudentDataService;
 using QuickTrackWeb.Services.TrackedItemDataService;
 using QuickTrackWeb.Services.WeekDataService;
 using QuickTrackWeb.Services.DownloadFile;
-using QuickTrackWeb.Components;
+using QuickTrackWeb.EmbeddedApi.Services;
 using System;
-
+using Microsoft.AspNetCore.Mvc.Formatters;
+using QuickTrackWeb.EmbeddedApi.Repository;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace QuickTrackWeb
 {
@@ -32,6 +35,15 @@ namespace QuickTrackWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //START: MVC STUFF FOR CONTROLLERS
+            services.AddControllers();
+            services.AddMvc()
+               .AddMvcOptions(o => o.OutputFormatters.Add(
+                   new XmlDataContractSerializerOutputFormatter()))
+               ;
+            //END: MVC STUFF FOR CONTROLLERS
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
              //options.UseNpgsql(
              options.UseSqlServer(
@@ -54,21 +66,28 @@ namespace QuickTrackWeb
 
             services.AddHttpClient<IClassEntityDataService, DefaultClassEntityDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44369/");
+                client.BaseAddress = new Uri("https://localhost:44389/");
             });
+
             services.AddHttpClient<IStudentDataService, DefaultStudentDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44369/");
+                client.BaseAddress = new Uri("https://localhost:44389/");
             });
             services.AddHttpClient<ITrackedItemDataService, DefaultTrackedItemDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44369/");
+                client.BaseAddress = new Uri("https://localhost:44389/");
             });
             services.AddHttpClient<IWeekDataService, DefaultWeekDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44369/");
+                client.BaseAddress = new Uri("https://localhost:44368/");
             });
 
+            //For the Standalone Api: client.BaseAddress = new Uri("https://localhost:44369/");
+
+            //MVC ADD
+            services.AddScoped<IQuickTrackEmbeddedApiRepository, EmbeddedQuickTrackApiRepository>();
+            services.AddAutoMapper(typeof(AutoMapperProfile));
+            //MVC ADD
 
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
@@ -84,8 +103,13 @@ namespace QuickTrackWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app,
+            IWebHostEnvironment env,
+            ILoggerFactory loggerFactory)
         {
+
+            loggerFactory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -108,10 +132,14 @@ namespace QuickTrackWeb
 
             app.UseEndpoints(endpoints =>
             {
+
+                //DEPRECATED (I think)
                 //For DownloadFileController
-                endpoints.MapControllerRoute(
-                   name: "default",
-                   pattern: "{controller}/{action}");
+                //endpoints.MapControllerRoute(
+                //   name: "default",
+                //   pattern: "{controller}/{action}");
+
+                endpoints.MapControllers();
 
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
