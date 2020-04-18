@@ -1,0 +1,117 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using QuickTrackWeb.EmbeddedApi.Repository;
+using QuickTrackWeb.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace QuickTrackWeb.EmbeddedApi.Controllers
+{
+    [Route("api/classentities")]
+    public class EmbeddedProgressRecordController : Controller
+    {
+
+        private ILogger<EmbeddedProgressRecordController> _logger;
+        private IQuickTrackEmbeddedApiRepository _repo;
+        private IMapper _mapper;
+        public EmbeddedProgressRecordController(
+            ILogger<EmbeddedProgressRecordController> logger,
+            IQuickTrackEmbeddedApiRepository repo,
+            IMapper mapper)
+        {
+            _logger = logger;
+            _repo = repo;
+            _mapper = mapper;  
+        }
+
+        [ActionName("GetProgressRecord")]
+        [HttpGet("progressrecords/{progressRecordId}")]
+        public IActionResult GetProgressRecord(int progressRecordId)
+        {
+            var progressRecord = _repo.GetProgressRecord(progressRecordId);
+
+            if (progressRecord == null)
+            {
+                return NotFound();
+            }
+
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            var results = _mapper.Map<ProgressRecordDto>(progressRecord);
+
+
+            return Ok(results);
+
+        }
+
+        [HttpPost("{ownerIdentityName}/progressrecords")]
+        public IActionResult CreateProgressRecord(
+            string ownerIdentityName,
+            [FromBody]  ProgressRecordForCreationDto newProgressRecord)
+        {
+            if (newProgressRecord == null)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_repo.ClassEntityExists(ownerIdentityName))
+            {
+                return NotFound();
+            }
+
+            var finalTrackedItem = _mapper.Map<Entities.ProgressRecord>(newProgressRecord);
+
+            //START: DUPLICATE ITEM CHECK
+            if (_repo.ProgressRecordIsDuplicate(finalTrackedItem))
+            {
+                return UnprocessableEntity("There is already a Progress Record with those Id's");
+            }
+            //END: DUPLICATE ITEM CHECK
+
+
+            _repo.AddProgressRecord(finalTrackedItem);
+            if (!_repo.Save())
+            {
+                return StatusCode(500, $"A problem happened while handling your request to create a progress record with these Foreign Keys:" +
+                    $"\nClassEntityId:{newProgressRecord.ClassEntityId}" +
+                    $"\nStudentId:{newProgressRecord.StudentId}" +
+                    $"\nTrackedItemId:{newProgressRecord.TrackedItemId}" +
+                    $"\nWeekId:{newProgressRecord.WeekId}");
+
+            }
+            var trackedItemToReturn = _mapper.Map<TrackedItemDto>(finalTrackedItem);
+
+            return CreatedAtAction("GetTrackedItem", new
+            { trackedItemId = trackedItemToReturn.Id }, trackedItemToReturn);
+
+
+
+        }
+
+        [HttpDelete("progressrecords/{progressRecordId}")]
+        public IActionResult DeleteProgressRecord(int progressRecordId)
+        {
+            if (!_repo.ProgressRecordExists(progressRecordId))
+            {
+                return NotFound();
+            }
+            var progressToDelete = _repo.GetProgressRecord(progressRecordId);
+
+            _repo.DeleteProgressRecord(progressToDelete);
+            if (!_repo.Save())
+            {
+                return StatusCode(500, $"A problem happened while handling your request to delete Progress Record with id: {progressRecordId}.");
+            }
+
+            return NoContent();//success
+        }
+
+    }
+}

@@ -13,153 +13,126 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
     [Route("api/classentities")]
     public class EmbeddedTrackedItemController : Controller
     {
-       
-            private ILogger<EmbeddedTrackedItemController> _logger;
-            private IQuickTrackEmbeddedApiRepository _repo;
-            private IMapper _mapper;
-            public EmbeddedTrackedItemController(
-                ILogger<EmbeddedTrackedItemController> logger,
-                IQuickTrackEmbeddedApiRepository repo,
-                IMapper mapper)
+
+        private ILogger<EmbeddedTrackedItemController> _logger;
+        private IQuickTrackEmbeddedApiRepository _repo;
+        private IMapper _mapper;
+        public EmbeddedTrackedItemController(
+            ILogger<EmbeddedTrackedItemController> logger,
+            IQuickTrackEmbeddedApiRepository repo,
+            IMapper mapper)
+        {
+            _logger = logger;
+            _repo = repo;
+            _mapper = mapper;
+        }
+        [HttpGet("{classEntityOwnerIdentityName}/trackeditems")]
+        public IActionResult GetAllTrackedItemsFromClassEntity(string classEntityOwnerIdentityName, bool includeChildern = false)
+        {
+            //return Ok(CitiesDataStore.Current.Cities);
+            var trackedItems = _repo.GetAllTrackedItemsFromClass(classEntityOwnerIdentityName);
+
+            if (trackedItems == null)
             {
-                _logger = logger;
-                _repo = repo;
-                _mapper = mapper;
+                return NotFound();
             }
 
-            [HttpGet("{classEntityOwnerIdentityName}/students")]
-            public IActionResult GetAllStudentsFromClassEntity(string classEntityOwnerIdentityName)
+            if (includeChildern)
             {
-                //return Ok(CitiesDataStore.Current.Cities);
-                var students = _repo.GetAllStudentsFromClass(classEntityOwnerIdentityName);
-
-                if (students == null)
-                {
-                    return NotFound();
-                }
-
-                //var results = new List<CityWithoutPointsOfInterestDto>();
-                var results = _mapper.Map<IEnumerable<StudentWithoutProgressDto>>(students);
-
-
+                var results = _mapper.Map<IEnumerable<TrackedItemDto>>(trackedItems);
                 return Ok(results);
-
             }
-
-            [ActionName("GetStudent")]
-            [HttpGet("students/{studentId}")]
-            public IActionResult GetStudent(int studentId)
+            else
             {
-                var student = _repo.GetStudent(studentId);
-
-                if (student == null)
-                {
-                    return NotFound();
-                }
-
-                //var results = new List<CityWithoutPointsOfInterestDto>();
-                var results = _mapper.Map<StudentDto>(student);
-
-
+                var results = _mapper.Map<IEnumerable<TrackedItemWithoutProgressDto>>(trackedItems);
                 return Ok(results);
-
             }
 
-
-            //[HttpGet("{ownerIdentityName}")]
-            //public IActionResult GetClassEntityByOwnerIdentityName(string ownerIdentityName)
-            //{
-            //    var classEntity = _repo.GetClassEntity(ownerIdentityName);
-
-            //    if (classEntity == null)
-            //    {
-            //        return NotFound();
-            //    }
-
-            //    var classEntityResult = _mapper.Map<ClassEntityDto>(classEntity);
-            //    return Ok(classEntityResult);
-
-
-            //    //Example of OLD CODE
-            //    ////find city
-            //    //var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
-            //    //if(cityToReturn == null)
-            //    //{
-            //    //    return NotFound();
-            //    //}
-
-            //    //return Ok(cityToReturn);
-            //    ///* original way
-            //    //return new JsonResult(
-            //    //    CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id)
-            //    //    ); */
-            //}
-
-            [HttpPost("{ownerIdentityName}/students")]
-            public IActionResult CreateStudent(
-                string ownerIdentityName,
-                [FromBody]  StudentForCreationDto newStudentDto)
-            {
-                if (newStudentDto == null)
-                {
-                    return BadRequest();
-                }
-
-                if (ModelState.IsValid == false)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                if (!_repo.ClassEntityExists(ownerIdentityName))
-                {
-                    return NotFound();
-                }
-
-                var finalStudent = _mapper.Map<Entities.Student>(newStudentDto);
-
-                //START: Might be able to replace this by defining student name as a Key value for EFCore
-                var classStudents = _repo.GetAllStudentsFromClass(ownerIdentityName);
-                foreach (var s in classStudents)
-                {
-                    if (s.Name == finalStudent.Name)
-                    {
-                        return UnprocessableEntity("There is already a Student with that name in this Class");
-                    }
-                }
-                //STOP: Might be able to replace this by defining student name as a Key value for EFCore
-
-                _repo.AddStudent(ownerIdentityName, finalStudent);
-                if (!_repo.Save())
-                {
-                    return StatusCode(500, $"A problem happened while handling your request to create a student with name:  {newStudentDto.Name}.");
-                }
-                var createdStudentToReturn = _mapper.Map<StudentDto>(finalStudent);
-
-                return CreatedAtAction("GetStudent", new
-                { studentId = createdStudentToReturn.Id }, createdStudentToReturn);
-
-
-
-            }
-
-            [HttpDelete("students/{studentId}")]
-            public IActionResult DeleteStudent(int studentId)
-            {
-                var studentToDelete = _repo.GetStudent(studentId);
-
-                if (studentToDelete == null)
-                {
-                    return NotFound("Bad Id Submitted");
-                }
-
-                _repo.DeleteStudent(studentToDelete);
-                if (!_repo.Save())
-                {
-                    return StatusCode(500, $"A problem happened while handling your request to create a class for student with id: {studentId}.");
-                }
-
-                return NoContent();//success
-            }
 
         }
+
+        [ActionName("GetTrackedItem")]
+        [HttpGet("trackeditems/{trackedItemId}")]
+        public IActionResult GetTrackedItem(int trackedItemId)
+        {
+            var trackedItem = _repo.GetTrackedItem(trackedItemId);
+
+            if (trackedItem == null)
+            {
+                return NotFound();
+            }
+
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            var results = _mapper.Map<TrackedItemDto>(trackedItem);
+
+
+            return Ok(results);
+
+        }
+
+        [HttpPost("{ownerIdentityName}/trackeditems")]
+        public IActionResult CreateTrackedItem(
+            string ownerIdentityName,
+            [FromBody]  TrackedItemForCreationDto newTrackedItemDto)
+        {
+            if (newTrackedItemDto == null)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_repo.ClassEntityExists(ownerIdentityName))
+            {
+                return NotFound();
+            }
+
+            var finalTrackedItem = _mapper.Map<Entities.TrackedItem>(newTrackedItemDto);
+
+            //START: Might be able to replace this by defining student name as a Key value for EFCore
+            var trackedItems = _repo.GetAllTrackedItemsFromClass(ownerIdentityName);
+            foreach (var s in trackedItems)
+            {
+                if (s.Name == finalTrackedItem.Name)
+                {
+                    return UnprocessableEntity("There is already a Tracked Item with that name in this Class");
+                }
+            }
+            //STOP: Might be able to replace this by defining student name as a Key value for EFCore
+
+            _repo.AddTrackedItem(ownerIdentityName, finalTrackedItem);
+            if (!_repo.Save())
+            {
+                return StatusCode(500, $"A problem happened while handling your request to create a Tracked Item with name:  {newTrackedItemDto.Name}.");
+            }
+            var trackedItemToReturn = _mapper.Map<TrackedItemDto>(finalTrackedItem);
+
+            return CreatedAtAction("GetTrackedItem", new
+            { trackedItemId = trackedItemToReturn.Id }, trackedItemToReturn);
+
+
+
+        }
+
+        [HttpDelete("trackeditems/{trackedItemId}")]
+        public IActionResult DeleteTrackedItem(int trackedItemId)
+        {
+            if (!_repo.TrackedItemExists(trackedItemId))
+            {
+                return NotFound();
+            }
+            var trackedItemToDelete = _repo.GetTrackedItem(trackedItemId);
+
+            _repo.DeleteTrackedItem(trackedItemToDelete);
+            if (!_repo.Save())
+            {
+                return StatusCode(500, $"A problem happened while handling your request to delete a TrackedItem with id: {trackedItemId}.");
+            }
+
+            return NoContent();//success
+        }
+    }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using QuickTrackWeb.EmbeddedApi.Entities;
+using QuickTrackWeb.EmbeddedApi.Services;
 
 namespace QuickTrackWeb.EmbeddedApi.Repository
 {
@@ -91,23 +92,156 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
         public IEnumerable<Student> GetAllStudentsFromClass(string classEntityOwnerIdentityName)
         {
             var classEntity = GetClassEntity(classEntityOwnerIdentityName);
-            return _context.Students.Where(s => s.ClassEntityId == classEntity.Id);
+            return _context.Students.Where(s => s.ClassEntityId == classEntity.Id).OrderBy(s => s.Name);
         }
         public Student GetStudent(int studentId)
         {
-            return _context.Students.Where(s =>  s.Id == studentId).FirstOrDefault();
+            var result = _context.Students.Where(s => s.Id == studentId)
+               .Include(y => y.ProgressRecords)
+               .FirstOrDefault();
+
+            if (result == null)
+            {
+                return Student.GetNullObject();
+            }
+            else
+            {
+                return result;
+            }
+           //OLD:  return _context.Students.Where(s =>  s.Id == studentId).FirstOrDefault();
         }
-        public void AddStudent(string ownerIdentityName, Student newStudent)
+        public void AddStudent(string classEntityOwnerIdentityName, Student newStudent)
         { 
-
-
-            var classEntity = GetClassEntity(ownerIdentityName);
+             var classEntity = GetClassEntity(classEntityOwnerIdentityName);
              classEntity.Students.Add(newStudent);
         }
 
         public void DeleteStudent(Student studentToDelete)
         {
             _context.Students.Remove(studentToDelete);
+        }
+
+        public IEnumerable<TrackedItem> GetAllTrackedItemsFromClass(string classEntityOwnerIdentityName)
+        {
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+            return _context.TrackedItems.Where(s => s.ClassEntityId == classEntity.Id).OrderBy(ti => ti.Name);
+        }
+
+        public TrackedItem GetTrackedItem(int trackedItemId)
+        {
+            var result = _context.TrackedItems.Where(ti => ti.Id == trackedItemId)
+               .Include(y => y.ProgressRecords)
+               .FirstOrDefault();
+
+            if (result == null)
+            {
+                return TrackedItem.GetNullObject();
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public void AddTrackedItem(string classEntityOwnerIdentityName, TrackedItem newTrackedItem)
+        {
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+            classEntity.TrackedItems.Add(newTrackedItem);
+        }
+
+        public void DeleteTrackedItem(TrackedItem trackedItemToDelete)
+        {
+            _context.TrackedItems.Remove(trackedItemToDelete);
+        }
+
+        public IEnumerable<Week> GetAllWeeksFromClass(string classEntityOwnerIdentityName)
+        {
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+            return _context.Weeks.Where(s => s.ClassEntityId == classEntity.Id).OrderBy(w => w.Number);
+        }
+
+        public Week GetWeek(int weekId)
+        {
+            var result = _context.Weeks.Where(w => w.Id == weekId)
+               .Include(y => y.ProgressRecords)
+               .FirstOrDefault();
+
+            if (result == null)
+            {
+                return Week.GetNullObject();
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public void AddWeek(string classEntityOwnerIdentityName, Week newWeek)
+        {
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+            classEntity.Weeks.Add(newWeek);
+        }
+
+        public void DeleteWeek(Week weekToDelete)
+        {
+            _context.Weeks.Remove(weekToDelete);
+        }
+
+        public ProgressRecord GetProgressRecord(int progressRecordId)
+        {
+            var result = _context.ProgressRecords.Where(pr => pr.Id == progressRecordId)
+                .FirstOrDefault();
+
+            if (result == null)
+            {
+                return ProgressRecord.GetNullObject();
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public void AddProgressRecord(ProgressRecord newProgressRecord)
+        { 
+            _context.ProgressRecords.Add(newProgressRecord);
+        }
+
+        public void DeleteProgressRecord(ProgressRecord progressRecordToDelete)
+        {
+            _context.ProgressRecords.Remove(progressRecordToDelete);
+        }
+
+        public bool StudentExists(int studentId)
+        {
+            return _context.Students.Any(s => s.Id == studentId);
+        }
+
+        public bool TrackedItemExists(int trackedItemId)
+        {
+            return _context.TrackedItems.Any(ti => ti.Id == trackedItemId);
+        }
+
+        public bool WeekExists(int weekId)
+        {
+            return _context.Weeks.Any(w => w.Id == weekId);
+        }
+
+        public bool ProgressRecordExists(int progressRecordId)
+        {
+            return _context.ProgressRecords.Any(pr => pr.Id == progressRecordId);
+        }
+        public bool ProgressRecordIsDuplicate(ProgressRecord progressRecord)
+        {
+            if(_context.ProgressRecords.Any(pr => 
+            pr.ClassEntityId == progressRecord.ClassEntityId
+            && pr.StudentId == progressRecord.StudentId
+            && pr.WeekId == progressRecord.WeekId
+            && pr.TrackedItemId == progressRecord.TrackedItemId))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

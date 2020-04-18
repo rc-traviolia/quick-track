@@ -27,5 +27,17 @@ namespace QuickTrackWeb.EmbeddedApi.Entities
 
         public List<ProgressRecord> ProgressRecords { get; set; }
 
+        public static TrackedItem GetNullObject()
+        {
+            TrackedItem nullTrackedItem = new TrackedItem();
+            nullTrackedItem.Id = -1;
+            nullTrackedItem.Name = "No Tracked Item found";
+            nullTrackedItem.UnitOfMeasure = "minutes";
+            nullTrackedItem.DailyTarget = 15;
+            nullTrackedItem.ClassEntityId = -1;
+            nullTrackedItem.ProgressRecords = new List<ProgressRecord>();
+            return nullTrackedItem;
+        }
+
     }
 }

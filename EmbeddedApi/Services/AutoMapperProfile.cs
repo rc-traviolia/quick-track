@@ -22,6 +22,17 @@ namespace QuickTrackWeb.EmbeddedApi.Services
             CreateMap<Student, StudentWithoutProgressDto>();
             CreateMap<StudentForCreationDto, Student>();
 
+            CreateMap<TrackedItem, TrackedItemDto>();
+            CreateMap<TrackedItem, TrackedItemWithoutProgressDto>();
+            CreateMap<TrackedItemForCreationDto, TrackedItem>();
+
+            CreateMap<Week, WeekDto>();
+            CreateMap<Week, WeekWithoutProgressDto>();
+            CreateMap<WeekForCreationDto, Week>();
+
+            CreateMap<ProgressRecord, ProgressRecordDto>();
+            CreateMap<ProgressRecordForCreationDto, ProgressRecord>();
+
             //EXAMPLE:
             //LEFT: Source to change
             //RIGHT: Target to change into

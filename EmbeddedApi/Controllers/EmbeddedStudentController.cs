@@ -27,7 +27,7 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
         }
 
         [HttpGet("{classEntityOwnerIdentityName}/students")]
-        public IActionResult GetAllStudentsFromClassEntity(string classEntityOwnerIdentityName)
+        public IActionResult GetAllStudentsFromClassEntity(string classEntityOwnerIdentityName, bool includeChildern = false)
         {
             //return Ok(CitiesDataStore.Current.Cities);
             var students = _repo.GetAllStudentsFromClass(classEntityOwnerIdentityName);
@@ -37,11 +37,17 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
                 return NotFound();
             }
 
-            //var results = new List<CityWithoutPointsOfInterestDto>();
-            var results = _mapper.Map<IEnumerable<StudentWithoutProgressDto>>(students);
-
-
-            return Ok(results);
+            if (includeChildern)
+            {
+                var results = _mapper.Map<IEnumerable<StudentDto>>(students);
+                return Ok(results);
+            }
+            else
+            {
+                var results = _mapper.Map<IEnumerable<StudentWithoutProgressDto>>(students);
+                return Ok(results);
+            }
+            
 
         }
 
@@ -63,36 +69,6 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
             return Ok(results);
 
         }
-
-
-        //[HttpGet("{ownerIdentityName}")]
-        //public IActionResult GetClassEntityByOwnerIdentityName(string ownerIdentityName)
-        //{
-        //    var classEntity = _repo.GetClassEntity(ownerIdentityName);
-
-        //    if (classEntity == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var classEntityResult = _mapper.Map<ClassEntityDto>(classEntity);
-        //    return Ok(classEntityResult);
-
-
-        //    //Example of OLD CODE
-        //    ////find city
-        //    //var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
-        //    //if(cityToReturn == null)
-        //    //{
-        //    //    return NotFound();
-        //    //}
-
-        //    //return Ok(cityToReturn);
-        //    ///* original way
-        //    //return new JsonResult(
-        //    //    CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id)
-        //    //    ); */
-        //}
 
         [HttpPost("{ownerIdentityName}/students")]
         public IActionResult CreateStudent(
@@ -144,17 +120,16 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
         [HttpDelete("students/{studentId}")]
         public IActionResult DeleteStudent(int studentId)
         {
-             var studentToDelete = _repo.GetStudent(studentId);
-
-            if (studentToDelete == null)
+            if (!_repo.StudentExists(studentId))
             {
-                return NotFound("Bad Id Submitted");
-            }
+                return NotFound();
+            }   
+            var studentToDelete = _repo.GetStudent(studentId);
 
             _repo.DeleteStudent(studentToDelete);
             if (!_repo.Save())
             {
-                return StatusCode(500, $"A problem happened while handling your request to create a class for student with id: {studentId}.");
+                return StatusCode(500, $"A problem happened while handling your request to create a Student with id: {studentId}.");
             }
 
             return NoContent();//success

@@ -17,10 +17,6 @@ namespace QuickTrackWeb.EmbeddedApi.Entities
         [Required]
         public string OwnerIdentityName { get; set; }
 
-        //TESTING TO CREATE THE FIRST WEEK ON CLASS SETUP
-        [NotMapped]
-        public DateTime StartTrackingDate { get; set; }
-
         public List<Week> Weeks {get; set;}
         public List<Student> Students { get; set; }
         public List<TrackedItem> TrackedItems { get; set; }

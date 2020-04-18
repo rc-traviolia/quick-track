@@ -27,16 +27,26 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetClassEntities()
+        public IActionResult GetClassEntities(bool includeChildren = false)
         {
             //return Ok(CitiesDataStore.Current.Cities);
             var classEntities = _repo.GetAllClassEntities();
 
             //var results = new List<CityWithoutPointsOfInterestDto>();
-            var results = _mapper.Map<IEnumerable<ClassEntityWithoutChildrenDto>>(classEntities);
+            if (includeChildren)
+            {
+                var results = _mapper.Map<IEnumerable<ClassEntityDto>>(classEntities);
+                return Ok(results);
+            }
+            else
+            {
+                var results = _mapper.Map<IEnumerable<ClassEntityWithoutChildrenDto>>(classEntities);
+                return Ok(results);
+            }
+            
 
 
-            return Ok(results);
+            
 
         }
        

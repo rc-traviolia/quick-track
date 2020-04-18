@@ -26,5 +26,16 @@ namespace QuickTrackWeb.EmbeddedApi.Entities
 
         public List<ProgressRecord> ProgressRecords { get; set; }
 
+        public static Week GetNullObject()
+        {
+            Week nullWeek = new Week();
+            nullWeek.Id = -1;
+            nullWeek.Number = -1;
+            nullWeek.MondayDate = new DateTime();
+            nullWeek.DayCount = -1;
+            nullWeek.ClassEntityId = -1;
+            nullWeek.ProgressRecords = new List<ProgressRecord>();
+            return nullWeek;
+        }
     }
 }

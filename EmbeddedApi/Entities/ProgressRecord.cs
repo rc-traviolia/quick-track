@@ -31,5 +31,17 @@ namespace QuickTrackWeb.EmbeddedApi.Entities
         public Week Week { get; set; }
         public int WeekId { get; set; }
 
+        public static ProgressRecord GetNullObject()
+        {
+            ProgressRecord nullProgressRecord = new ProgressRecord();
+            nullProgressRecord.Id = -1;
+            nullProgressRecord.Progress = 0;
+            nullProgressRecord.ClassEntityId = -1;
+            nullProgressRecord.StudentId = -1;
+            nullProgressRecord.TrackedItemId = -1;
+            nullProgressRecord.WeekId = -1;
+            return nullProgressRecord;
+        }
+
     }
 }
