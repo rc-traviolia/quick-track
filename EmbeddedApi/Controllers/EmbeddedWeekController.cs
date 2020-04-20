@@ -108,7 +108,7 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
             {
                 return StatusCode(500, $"A problem happened while handling your request to create a week with number:  {newWeekDto.Number}.");
             }
-            var weekToReturn = _mapper.Map<TrackedItemDto>(finalWeek);
+            var weekToReturn = _mapper.Map<WeekDto>(finalWeek);
 
             return CreatedAtAction("GetWeek", new
             { weekId = weekToReturn.Id }, weekToReturn);

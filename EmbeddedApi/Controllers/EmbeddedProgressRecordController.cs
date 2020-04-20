@@ -69,9 +69,15 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
             var finalTrackedItem = _mapper.Map<Entities.ProgressRecord>(newProgressRecord);
 
             //START: DUPLICATE ITEM CHECK
-            if (_repo.ProgressRecordIsDuplicate(finalTrackedItem))
+            var existingProgressRecord = _repo.GetProgressRecordByForeignKeys(
+                finalTrackedItem.ClassEntityId,
+                finalTrackedItem.StudentId,
+                finalTrackedItem.TrackedItemId,
+                finalTrackedItem.WeekId);
+            if (existingProgressRecord != null)
             {
-                return UnprocessableEntity("There is already a Progress Record with those Id's");
+                _repo.DeleteProgressRecord(existingProgressRecord);
+                //return UnprocessableEntity("There is already a Progress Record with those Id's");
             }
             //END: DUPLICATE ITEM CHECK
 
@@ -86,10 +92,10 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
                     $"\nWeekId:{newProgressRecord.WeekId}");
 
             }
-            var trackedItemToReturn = _mapper.Map<TrackedItemDto>(finalTrackedItem);
+            var progressRecordToReturn = _mapper.Map<ProgressRecordDto>(finalTrackedItem);
 
-            return CreatedAtAction("GetTrackedItem", new
-            { trackedItemId = trackedItemToReturn.Id }, trackedItemToReturn);
+            return CreatedAtAction("GetProgressRecord", new
+            { progressRecordId = progressRecordToReturn.Id }, progressRecordToReturn);
 
 
 

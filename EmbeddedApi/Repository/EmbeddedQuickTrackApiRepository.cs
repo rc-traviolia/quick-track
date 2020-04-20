@@ -243,6 +243,15 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
             }
             return false;
         }
+
+        public ProgressRecord GetProgressRecordByForeignKeys(int ClassEntityId, int StudentId, int TrackedItemId, int WeekId)
+        {
+            return _context.ProgressRecords.Where(pr =>
+            pr.ClassEntityId == ClassEntityId
+            && pr.StudentId == StudentId
+            && pr.WeekId == WeekId
+            && pr.TrackedItemId == TrackedItemId).FirstOrDefault();
+        }
     }
 }
 
