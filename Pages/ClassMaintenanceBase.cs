@@ -21,7 +21,7 @@ namespace QuickTrackWeb.Pages
         public IClassEntityDataService _classEntityDataService {get; set;}
 
         public IEnumerable<ClassEntityWithoutChildrenDto> ClassEntities { get; set; } //= new List<ClassEntityWithoutChildrenDto>();
-        public ClassEntityDto PickedClassEntity { get; set; } //= new ClassEntityDto { Id = -1, Name = "No Class Found", OwnerIdentityName = "unreal@test.com" };
+        public ClassEntityWithoutChildrenDto PickedClassEntity { get; set; } //= new ClassEntityDto { Id = -1, Name = "No Class Found", OwnerIdentityName = "unreal@test.com" };
 
         protected AddClassEntityDialog AddClassEntityDialog { get; set; }
         protected DeleteClassEntityDialog DeleteClassEntityDialog { get; set; }
@@ -31,7 +31,7 @@ namespace QuickTrackWeb.Pages
         protected override async Task OnInitializedAsync()
         {
             LoggedInUserName = (await authenticationStateTask).User.Identity.Name;
-            PickedClassEntity = (await _classEntityDataService.GetClassEntity(LoggedInUserName));
+            PickedClassEntity = (await _classEntityDataService.GetClassEntityWithoutChildren(LoggedInUserName));
             
             if(PickedClassEntity == null)
             {
@@ -49,7 +49,7 @@ namespace QuickTrackWeb.Pages
             // StateHasChanged();
 
 
-            PickedClassEntity = (await _classEntityDataService.GetClassEntity(LoggedInUserName));
+            PickedClassEntity = (await _classEntityDataService.GetClassEntityWithoutChildren(LoggedInUserName));
 
             StateHasChanged();
         }

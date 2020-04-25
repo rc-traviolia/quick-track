@@ -5,19 +5,19 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using QuickTrackWeb.Api;
+using QuickTrackWeb.EmbeddedApi.Services;
 
-namespace QuickTrackWeb.Api.Migrations
+namespace QuickTrackWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200414210727_fixingstuff")]
-    partial class fixingstuff
+    [Migration("20200425043608_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.0-preview.2.20159.4")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -164,10 +164,12 @@ namespace QuickTrackWeb.Api.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -204,10 +206,12 @@ namespace QuickTrackWeb.Api.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -217,7 +221,7 @@ namespace QuickTrackWeb.Api.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.ClassEntity", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.ClassEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -237,7 +241,7 @@ namespace QuickTrackWeb.Api.Migrations
                     b.ToTable("ClassEntities");
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.ProgressRecord", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.ProgressRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,7 +276,7 @@ namespace QuickTrackWeb.Api.Migrations
                     b.ToTable("ProgressRecords");
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.Student", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -294,7 +298,7 @@ namespace QuickTrackWeb.Api.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.TrackedItem", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.TrackedItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +327,7 @@ namespace QuickTrackWeb.Api.Migrations
                     b.ToTable("TrackedItems");
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.Week", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.Week", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -401,54 +405,54 @@ namespace QuickTrackWeb.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.ProgressRecord", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.ProgressRecord", b =>
                 {
-                    b.HasOne("QuickTrackWeb.Api.Entities.ClassEntity", "ClassEntity")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.ClassEntity", "ClassEntity")
                         .WithMany("ProgressRecords")
                         .HasForeignKey("ClassEntityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("QuickTrackWeb.Api.Entities.Student", "Student")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.Student", "Student")
                         .WithMany("ProgressRecords")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("QuickTrackWeb.Api.Entities.TrackedItem", "TrackedItem")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.TrackedItem", "TrackedItem")
                         .WithMany("ProgressRecords")
                         .HasForeignKey("TrackedItemId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("QuickTrackWeb.Api.Entities.Week", "Week")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.Week", "Week")
                         .WithMany("ProgressRecords")
                         .HasForeignKey("WeekId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.Student", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.Student", b =>
                 {
-                    b.HasOne("QuickTrackWeb.Api.Entities.ClassEntity", "ClassEntity")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.ClassEntity", "ClassEntity")
                         .WithMany("Students")
                         .HasForeignKey("ClassEntityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.TrackedItem", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.TrackedItem", b =>
                 {
-                    b.HasOne("QuickTrackWeb.Api.Entities.ClassEntity", "ClassEntity")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.ClassEntity", "ClassEntity")
                         .WithMany("TrackedItems")
                         .HasForeignKey("ClassEntityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuickTrackWeb.Api.Entities.Week", b =>
+            modelBuilder.Entity("QuickTrackWeb.EmbeddedApi.Entities.Week", b =>
                 {
-                    b.HasOne("QuickTrackWeb.Api.Entities.ClassEntity", "ClassEntity")
+                    b.HasOne("QuickTrackWeb.EmbeddedApi.Entities.ClassEntity", "ClassEntity")
                         .WithMany("Weeks")
                         .HasForeignKey("ClassEntityId")
                         .OnDelete(DeleteBehavior.NoAction)

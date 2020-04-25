@@ -46,9 +46,26 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
 
         }
 
-        [HttpPost("{ownerIdentityName}/progressrecords")]
-        public IActionResult CreateProgressRecord(
-            string ownerIdentityName,
+        [HttpGet("{classEntityOwnerIdentityName}/weeks/{weekId}/progressrecords")]
+        public IActionResult GetProgressRecordsForClassEntityAndWeek(string classEntityOwnerIdentityName, int weekId)
+        {
+            if (!_repo.ClassEntityExists(classEntityOwnerIdentityName) ||
+                !_repo.WeekExists(weekId))
+            {
+                return NotFound();
+            }
+
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            var progressRecordsToReturn = _repo.GetAllProgressRecordsFromClassAndWeek(classEntityOwnerIdentityName, weekId);
+            var results = _mapper.Map<IEnumerable<ProgressRecordDto>>(progressRecordsToReturn);
+
+
+            return Ok(results);
+
+        }
+
+        [HttpPost("progressrecords")]
+        public IActionResult CreateReplaceProgressRecord(
             [FromBody]  ProgressRecordForCreationDto newProgressRecord)
         {
             if (newProgressRecord == null)
@@ -61,7 +78,9 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_repo.ClassEntityExists(ownerIdentityName))
+            if (!_repo.StudentExists(newProgressRecord.StudentId) ||
+                !_repo.WeekExists(newProgressRecord.WeekId) ||
+                !_repo.TrackedItemExists(newProgressRecord.TrackedItemId))
             {
                 return NotFound();
             }

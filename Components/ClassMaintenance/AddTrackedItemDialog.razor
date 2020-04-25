@@ -18,30 +18,27 @@
                 <div class="modal-body">
 
                     <EditForm Model="@trackedItemToCreate" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="form-group">
-                            <label for="lastName">Last name: </label>
-                            <InputText id="lastName" class="form-control" @bind-Value="@trackedItemToCreate.Name" placeholder="Enter last name"></InputText>
+                            <label for="lastName">Name: </label>
+                            <InputText id="lastName" class="form-control" @bind-Value="@trackedItemToCreate.Name" placeholder="Enter name here"></InputText>
                             <ValidationMessage For="@(() => @trackedItemToCreate.Name)" />
                         </div>
-                        @*<div class="form-group">
-            <label for="lastName">Last name: </label>
-            <InputText id="lastName" class="form-control" @bind-Value="@Employee.LastName" placeholder="Enter last name"></InputText>
-            <ValidationMessage For="@(() => Employee.LastName)" />
-        </div>
 
-        <div class="form-group">
-            <label for="firstName">First name: </label>
-            <InputText id="firstName" class="form-control" @bind-Value="@Employee.FirstName" placeholder="Enter first name"></InputText>
-            <ValidationMessage For="@(() => Employee.FirstName)" />
-        </div>
+                        <div class="form-group">
+                            <label for="firstName">Unit of Measure (m, h, min, hrs, minutes, hours): </label>
+                            <InputText id="firstName" class="form-control" @bind-Value="@trackedItemToCreate.UnitOfMeasure" placeholder="Enter unit of measure"></InputText>
+                            <ValidationMessage For="@(() => trackedItemToCreate.UnitOfMeasure)" />
+                        </div>
 
-        <div class="form-group">
-            <label for="email">Email: </label>
-            <InputText id="email" class="form-control" @bind-Value="@Employee.Email" placeholder="Enter email"></InputText>
-            <ValidationMessage For="@(() => Employee.Email)" />
-        </div>
-        <button type="submit" class="btn btn-primary blue-button">Save employee</button>
-        <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>*@
+                        <div class="form-group">
+                            <label for="email">Daily Target: </label>
+                            <InputNumber id="email" class="form-control" @bind-Value="@trackedItemToCreate.DailyTarget" placeholder="Enter daily target"></InputNumber>
+                            <ValidationMessage For="@(() => trackedItemToCreate.DailyTarget)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary blue-button">Add to Class</button>
+                        <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>
                     </EditForm>
 
                 </div>
@@ -62,6 +59,7 @@
     public void Show(string ownerIdentityName)
     {
         OwnerIdentityName = ownerIdentityName;
+        ResetDialog();
         ShowDialog = true;
         StateHasChanged();
 

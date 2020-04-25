@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuickTrackWeb.Shared.Models
 {
@@ -11,6 +12,7 @@ namespace QuickTrackWeb.Shared.Models
         public string UnitOfMeasure { get; set; }
 
         [Required(ErrorMessage ="You must provide a daily goal for a new Tracked Item.")]
+        [Range(1, Int32.MaxValue, ErrorMessage ="This must be an integer greater than 0.")]
         public int DailyTarget { get; set; }
     }
 }

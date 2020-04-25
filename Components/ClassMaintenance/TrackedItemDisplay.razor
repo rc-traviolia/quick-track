@@ -7,11 +7,11 @@
             <li class="display-list-header" style="color:white">
                 @if (TrackedItemList != null)
                 {
-                    <div class="header-text">Students (@TrackedItemList.Count() Total) </div>
+                    <div class="header-text">Tracked Items (@TrackedItemList.Count() Total) </div>
                 }
                 else
                 {
-                    <div class="header-text">Students (0 Total) </div>
+                    <div class="header-text">Tracked Items (0 Total) </div>
                 }
 
 
@@ -29,9 +29,7 @@
                 {
                     var trackedItemToDelete = trackedItem;
         <li class="display-list-item">
-            <div class="item-text">@trackedItem.Name</div>
-            <div class="">@trackedItem.DailyTarget</div>
-            <div class=""> @trackedItem.UnitOfMeasure</div>
+            <div class="item-text">@trackedItem.Name (@trackedItem.DailyTarget @trackedItem.UnitOfMeasure per tracked day)</div>
 
             <button class="oi-oi-delete red-button item-button" @onclick="@(e => deleteTrackedItemDialog.Show(trackedItemToDelete))">Remove</button>
             <DeleteTrackedItemDialog @ref="deleteTrackedItemDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteTrackedItemDialog>

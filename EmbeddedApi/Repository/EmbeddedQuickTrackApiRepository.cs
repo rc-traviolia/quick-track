@@ -31,7 +31,6 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
         {
             var result = _context.ClassEntities.Where(c => c.OwnerIdentityName == ownerIdentityName)
                 .Include(y => y.Students)
-                .Include(y => y.ProgressRecords)
                 .Include(y => y.Weeks)
                 .Include(y => y.TrackedItems)
                 .FirstOrDefault();
@@ -251,6 +250,17 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
             && pr.StudentId == StudentId
             && pr.WeekId == WeekId
             && pr.TrackedItemId == TrackedItemId).FirstOrDefault();
+        }
+
+        public IEnumerable<ProgressRecord> GetAllProgressRecordsFromClassAndWeek(string classEntityOwnerIdentityName, int weekId)
+        {
+            //this is lazy and shouldn't need to happen, but my site is, at this point,
+            //needing to be completed... RT 4/24/2020
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+
+            return _context.ProgressRecords.Where(pr =>
+                pr.ClassEntityId == classEntity.Id &&
+                pr.WeekId == weekId);
         }
     }
 }

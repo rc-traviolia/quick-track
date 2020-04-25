@@ -52,7 +52,7 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
        
         [ActionName("GetClassEntityByOwnerIdentityName")]
         [HttpGet("{ownerIdentityName}")]
-        public IActionResult GetClassEntityByOwnerIdentityName(string ownerIdentityName)
+        public IActionResult GetClassEntityByOwnerIdentityName(string ownerIdentityName, bool includeChildren = false)
         {
             var classEntity = _repo.GetClassEntity(ownerIdentityName);
 
@@ -61,9 +61,19 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
                 return NotFound();
             }
 
-            var classEntityResult = _mapper.Map<ClassEntityDto>(classEntity);
-            return Ok(classEntityResult);
+            if (includeChildren)
+            {
+                var classEntityResult = _mapper.Map<ClassEntityDto>(classEntity);
+                return Ok(classEntityResult);
+            }
+            else
+            {
+                var classEntityResult = _mapper.Map<ClassEntityWithoutChildrenDto>(classEntity);
+                return Ok(classEntityResult);
+            }
+        
         }
+            
 
         [HttpPost]
         public IActionResult CreateClassEntity(

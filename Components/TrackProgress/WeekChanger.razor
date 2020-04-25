@@ -1,0 +1,83 @@
+﻿@using QuickTrackWeb.Services.WeekDataService;
+@using QuickTrackWeb.Components.TrackProgress;
+@inject IWeekDataService _weekDataService
+
+    <div class="week-display-area">
+
+
+        <button class="previous-week-button">previous</button>
+        <div class="week-number">@PickedWeekNum</div>
+
+        @if (PickedWeekNum == GetMaxWeekNum())
+        {
+            if (PickedWeekNum == 0)
+            {
+                var ownerIdentityName = classEntityOwnerIdentityName;
+                var nullWeek = WeekWithoutProgressDto.GetNullWeek();
+                <button class="next-week-button" @onclick="@(e => addWeekDialog.Show(ownerIdentityName, nullWeek))">Add</button>
+                <AddWeekDialog @ref="addWeekDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddWeekDialog>
+            }
+            else
+            {
+                var ownerIdentityName = classEntityOwnerIdentityName;
+                var mostRecentWeek = AllWeeks.Where(w => w.Number == AllWeeks.Max(y => y.Number)).FirstOrDefault();
+                <button class="next-week-button" @onclick="@(e => addWeekDialog.Show(ownerIdentityName, mostRecentWeek))">Add</button>
+                <AddWeekDialog @ref="addWeekDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddWeekDialog>
+            }
+        }
+        else
+        {
+            <button class="next-week-button">next</button>
+        }
+        <div class="week-label"> working on week </div>
+        <div class="week-label"> //TODO: add date here</div>
+    </div>
+    <div class="t1">
+        @if (PickedWeekNum > 0)
+        {
+            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().Number</div>
+            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().MondayDate</div>
+            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().DayCount</div>
+        }
+
+
+    </div>
+
+@code {
+    [Parameter]
+    public string classEntityOwnerIdentityName { get; set; }
+
+    protected IEnumerable<WeekWithoutProgressDto> AllWeeks;
+
+    protected AddWeekDialog addWeekDialog { get; set; }
+    protected int PickedWeekNum { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        AllWeeks = (await _weekDataService.GetWeeksForClass(classEntityOwnerIdentityName));
+        PickedWeekNum = GetMaxWeekNum();
+
+
+    }
+
+    public async void Dialog_OnDialogClose()
+    {
+        AllWeeks = (await _weekDataService.GetWeeksForClass(classEntityOwnerIdentityName));
+        StateHasChanged();
+    }
+    private int GetMaxWeekNum()
+    {
+        if (AllWeeks == null)
+        {
+            return 0;
+        }
+        if(AllWeeks.Count() == 0)
+        {
+            return 0;
+        }
+
+        return AllWeeks.Max(y => y.Number);
+    }
+
+}

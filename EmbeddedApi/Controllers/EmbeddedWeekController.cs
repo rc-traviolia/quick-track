@@ -27,7 +27,7 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
             _mapper = mapper;
         }
         [HttpGet("{classEntityOwnerIdentityName}/weeks")]
-        public IActionResult GetAllWeeksFromClassEntity(string classEntityOwnerIdentityName, bool includeChildern = false)
+        public IActionResult GetAllWeeksFromClassEntity(string classEntityOwnerIdentityName, bool includeChildren = false)
         {
             //return Ok(CitiesDataStore.Current.Cities);
             var weeks = _repo.GetAllWeeksFromClass(classEntityOwnerIdentityName);
@@ -37,7 +37,7 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
                 return NotFound();
             }
 
-            if (includeChildern)
+            if (includeChildren)
             {
                 var results = _mapper.Map<IEnumerable<WeekDto>>(weeks);
                 return Ok(results);

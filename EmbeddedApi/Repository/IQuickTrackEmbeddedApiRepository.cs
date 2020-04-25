@@ -34,6 +34,7 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
         void DeleteWeek(Week weekToDelete);
 
         bool ProgressRecordExists(int progressRecordId);
+        IEnumerable<ProgressRecord> GetAllProgressRecordsFromClassAndWeek(string classEntityOwnerIdentityName, int weekId);
         ProgressRecord GetProgressRecordByForeignKeys(int ClassEntityId, int StudentId, int TrackedItemId,int WeekId);
         bool ProgressRecordIsDuplicate(ProgressRecord progressRecordId);
         ProgressRecord GetProgressRecord(int progressRecordId);

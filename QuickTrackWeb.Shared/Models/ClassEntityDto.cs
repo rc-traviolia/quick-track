@@ -7,10 +7,9 @@ namespace QuickTrackWeb.Shared.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string OwnerIdentityName { get; set; }
-        public ICollection<WeekDto> Weeks { get; set; } = new List<WeekDto>();
-        public ICollection<StudentDto> Students { get; set; } = new List<StudentDto>();
-        public ICollection<TrackedItemDto> TrackedItems { get; set; } = new List<TrackedItemDto>();
-        public ICollection<ProgressRecordDto> ProgressRecords { get; set; } = new List<ProgressRecordDto>();
+        public ICollection<WeekWithoutProgressDto> Weeks { get; set; } = new List<WeekWithoutProgressDto>();
+        public ICollection<StudentWithoutProgressDto> Students { get; set; } = new List<StudentWithoutProgressDto>();
+        public ICollection<TrackedItemWithoutProgressDto> TrackedItems { get; set; } = new List<TrackedItemWithoutProgressDto>();
         public int NumberOfWeeks
         {
             get
@@ -32,13 +31,7 @@ namespace QuickTrackWeb.Shared.Models
                 return TrackedItems.Count;
             }
         }
-        public int NumberOfProgressRecords
-        {
-            get
-            {
-                return ProgressRecords.Count;
-            }
-        }
+
 
     }
 }

@@ -16,5 +16,12 @@ namespace QuickTrackWeb.Shared.Models
         [Required(ErrorMessage = "A week must have some number of days")]
         [Range(0, 5, ErrorMessage ="A week can be from 0 (an entire week off) to 5 (full M-F week) days long")]
         public int DayCount { get; set; }
+
+        public WeekForCreationDto(WeekWithoutProgressDto previousWeek)
+        {
+            Number = previousWeek.Number + 1;
+            MondayDate = previousWeek.MondayDate.AddDays(7);
+            DayCount = 5; //TODO: method to get day count based on recognized holidays. upload school calendar? Hah!
+        }
     }
 }

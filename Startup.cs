@@ -79,7 +79,7 @@ namespace QuickTrackWeb
             });
             services.AddHttpClient<IWeekDataService, DefaultWeekDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44368/");
+                client.BaseAddress = new Uri("https://localhost:44389/");
             });
 
             //For the Standalone Api: client.BaseAddress = new Uri("https://localhost:44369/");

@@ -25,26 +25,27 @@ else
         <TrackedItemDisplay classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName"></TrackedItemDisplay>
 
 
-        <AuthorizeView>
-            <Authorized>
-                <div class="footer-display-area">
-                    @if (@context.User.IsInRole("Administrator") == false)
-                    {
-                        <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
-                        <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
-                    }
+        @*<AuthorizeView>
+                    <Authorized>
+                        <div class="footer-display-area">
+                            @if (@context.User.IsInRole("Administrator") == false)
+                            {
+                                <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
+                                <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
+                    <ul>
+                @foreach (var c in ClassEntities)
+                {
+                    <li>@c.Name -> @c.OwnerIdentityName</li>
+                }
+            </ul>
+                            }
 
-                </div>
-               
-            </Authorized>
-        </AuthorizeView>
+                        </div>
+
+                    </Authorized>
+                </AuthorizeView>*@
 
     }
 
-    <ul>
-        @foreach (var c in ClassEntities)
-        {
-            <li>@c.Name -> @c.OwnerIdentityName</li>
-        }
-    </ul>
+
 }

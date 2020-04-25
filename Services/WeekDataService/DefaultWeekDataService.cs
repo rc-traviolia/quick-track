@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace QuickTrackWeb.Services.WeekDataService
@@ -16,9 +18,19 @@ namespace QuickTrackWeb.Services.WeekDataService
             _httpClient = httpClient;
         }
 
-        public Task<WeekDto> AddWeek(string classEntityOwnerIdentityName, WeekForCreationDto weekToAdd)
+        public async Task<WeekDto> AddWeek(string classEntityOwnerIdentityName, WeekForCreationDto weekToAdd)
         {
-            throw new NotImplementedException();
+            var weekForCreation =
+               new StringContent(JsonSerializer.Serialize(weekToAdd), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"api/classentities/{classEntityOwnerIdentityName}/weeks", weekForCreation);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await JsonSerializer.DeserializeAsync<WeekDto>(await response.Content.ReadAsStreamAsync());
+            }
+
+            return null;
         }
 
         public Task DeleteWeek(int weekId)
@@ -26,9 +38,13 @@ namespace QuickTrackWeb.Services.WeekDataService
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<WeekWithoutProgressDto>> GetWeeksForClass(string classEntityOwnerIdentityName)
+        public async Task<IEnumerable<WeekWithoutProgressDto>> GetWeeksForClass(string classEntityOwnerIdentityName)
         {
-            throw new NotImplementedException();
+            var response = (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/weeks"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            Console.WriteLine(response.ToString());
+
+            return await JsonSerializer.DeserializeAsync<IEnumerable<WeekWithoutProgressDto>>
+                     (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/weeks"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
         public Task UpdateWeek()

@@ -17,12 +17,12 @@ namespace QuickTrackWeb.Components.ClassMaintenance
         [Inject]
         public IClassEntityDataService _classEntityDataService { get; set; }
 
-        public ClassEntityDto ClassEntity { get; set; }
+        public ClassEntityWithoutChildrenDto ClassEntity { get; set; }
 
         protected StringMatcher StringMatcher { get; set; }
 
 
-        public void Show(ClassEntityDto classEntityToDelete)
+        public void Show(ClassEntityWithoutChildrenDto classEntityToDelete)
         {
             StringMatcher = new StringMatcher(classEntityToDelete.Name);
             ResetDialog(classEntityToDelete);
@@ -30,7 +30,7 @@ namespace QuickTrackWeb.Components.ClassMaintenance
             StateHasChanged();
         }
 
-        private void ResetDialog(ClassEntityDto classEntityToDelete)
+        private void ResetDialog(ClassEntityWithoutChildrenDto classEntityToDelete)
         {
             ClassEntity = classEntityToDelete;// _sessionDataService.LoggedInUserName };
         }

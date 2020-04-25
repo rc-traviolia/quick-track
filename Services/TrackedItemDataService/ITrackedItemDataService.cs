@@ -9,7 +9,7 @@ namespace QuickTrackWeb.Services.TrackedItemDataService
     public interface ITrackedItemDataService
     {
         Task<IEnumerable<TrackedItemWithoutProgressDto>> GetTrackedItemsForClass(string classEntityOwnerIdentityName);
-        Task<StudentDto> AddTrackedItem(string classEntityOwnerIdentityName, TrackedItemForCreationDto trackedItemToAdd);
+        Task<TrackedItemDto> AddTrackedItem(string classEntityOwnerIdentityName, TrackedItemForCreationDto trackedItemToAdd);
         Task UpdateTrackedItem();
         Task DeleteTrackedItem(int trackedItemId);
     }

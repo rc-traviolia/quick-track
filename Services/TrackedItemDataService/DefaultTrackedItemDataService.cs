@@ -18,39 +18,30 @@ namespace QuickTrackWeb.Services.TrackedItemDataService
             _httpClient = httpClient;
         }
   
-        public async Task<StudentDto> AddTrackedItem(string classEntityOwnerIdentityName, TrackedItemForCreationDto trackedItemToAdd)
+        public async Task<TrackedItemDto> AddTrackedItem(string classEntityOwnerIdentityName, TrackedItemForCreationDto trackedItemToAdd)
         {
+            var trackedItemForCreation =
+               new StringContent(JsonSerializer.Serialize(trackedItemToAdd), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"api/classentities/{classEntityOwnerIdentityName}/trackeditems", trackedItemForCreation);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await JsonSerializer.DeserializeAsync<TrackedItemDto>(await response.Content.ReadAsStreamAsync());
+            }
+
             return null;
-            throw new NotImplementedException();
-
-            //var classEntityForCreationJson =
-            //   new StringContent(JsonSerializer.Serialize(trackedItemToAdd), Encoding.UTF8, "application/json");
-
-            //var response = await _httpClient.PostAsync($"api/classentities/{classEntityOwnerIdentityName}/students", classEntityForCreationJson);
-
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    return await JsonSerializer.DeserializeAsync<StudentDto>(await response.Content.ReadAsStreamAsync());
-            //}
-
-            //return null;
         }
 
         public async Task DeleteTrackedItem(int trackedItemId)
         {
-            return;
-
-            throw new NotImplementedException();
-
-            //await _httpClient.DeleteAsync($"api/classentities/students/{studentId}");
+            await _httpClient.DeleteAsync($"api/classentities/trackeditems/{trackedItemId}");
         }
 
         public async Task<IEnumerable<TrackedItemWithoutProgressDto>> GetTrackedItemsForClass(string classEntityOwnerIdentityName)
         {
-            return null;
-            throw new NotImplementedException();
-            //return await JsonSerializer.DeserializeAsync<IEnumerable<StudentWithoutProgressDto>>
-            //        (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/students"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+           return await JsonSerializer.DeserializeAsync<IEnumerable<TrackedItemWithoutProgressDto>>
+                    (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/trackeditems"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         }
 

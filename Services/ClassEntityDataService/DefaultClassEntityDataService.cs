@@ -47,6 +47,12 @@ namespace QuickTrackWeb.Services.ClassEntityDataService
         public async Task<ClassEntityDto> GetClassEntity(string loggedInUserName)
         {
             return await JsonSerializer.DeserializeAsync<ClassEntityDto>
+                (await _httpClient.GetStreamAsync($"api/classentities/{loggedInUserName}?includeChildren=true"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+
+        public async Task<ClassEntityWithoutChildrenDto> GetClassEntityWithoutChildren(string loggedInUserName)
+        {
+            return await JsonSerializer.DeserializeAsync<ClassEntityWithoutChildrenDto>
                 (await _httpClient.GetStreamAsync($"api/classentities/{loggedInUserName}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 

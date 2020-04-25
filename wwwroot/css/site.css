@@ -6,7 +6,18 @@ h1 {
     font-size: 3.75rem;
     font-family: 'Chalkboard-header';
 }
-
+.week-display-area .previous-week-button{
+    float:left;
+}
+.week-display-area .week-number {
+    float:left;
+}
+.week-display-area .next-week-button {
+    float:none;
+}
+.week-display-area .week-label {
+    width:100%;
+}
 .display-space {
     min-height: 100%;
     /* Equal to height of footer */

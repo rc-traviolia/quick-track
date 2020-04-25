@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using QuickTrackWeb.Services.WeekDataService;
+@using QuickTrackWeb.Shared.Models;
+@using System.Threading.Tasks;
+@inject IWeekDataService _weekDataService
+
+@if (ShowDialog)
+{
+    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog" style="color:black">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titleLabel">Enter a name to create a student:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <EditForm Model="@WeekToCreate" OnValidSubmit="@HandleValidSubmit">
+
+                        <DataAnnotationsValidator />
+                        <div class="form-group">
+                            <label for="lastName">Number: </label>
+                            <InputNumber id="name" class="form-control" @bind-Value="@WeekToCreate.Number"></InputNumber>
+                            <ValidationMessage For="@(() => WeekToCreate.Number)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Monday Date: </label>
+                            <InputNumber id="mondayDate" class="form-control" @bind-Value="@WeekToCreate.MondayDate"></InputNumber>
+                            <ValidationMessage For="@(() => WeekToCreate.Number)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Day Count: </label>
+                            <InputNumber id="dayCount" class="form-control" @bind-Value="@WeekToCreate.DayCount" ></InputNumber>
+                            <ValidationMessage For="@(() => WeekToCreate.DayCount)" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add this Week</button>
+                        <a class="btn btn-outline-primary" @onclick="@Close">Cancel</a>
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    public bool ShowDialog { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CloseEventCallback { get; set; }
+
+    protected WeekForCreationDto WeekToCreate { get; set; }
+    protected WeekWithoutProgressDto MostRecentWeek { get; set; }
+    protected string OwnerIdentityName;
+
+    public void Show(string ownerIdentityName, WeekWithoutProgressDto mostRecentWeek)
+    {
+        OwnerIdentityName = ownerIdentityName;
+        MostRecentWeek = mostRecentWeek;
+        //if(MostRecentWeek == null)
+        //{
+        //    MostRecentWeek = WeekWithoutProgressDto.GetNullWeek();
+        //}
+        ResetDialog();
+        ShowDialog = true;
+        StateHasChanged();
+    }
+
+    private async void ResetDialog()
+    {
+        //StudentName = new RequiredString();
+        WeekToCreate = new WeekForCreationDto(MostRecentWeek);
+    }
+
+    public void Close()
+    {
+        ShowDialog = false;
+        StateHasChanged();
+    }
+
+    protected async Task HandleValidSubmit()
+    {
+        //StudentToCreate.Name = StudentName.Value;
+        await _weekDataService.AddWeek(OwnerIdentityName, WeekToCreate);
+        ShowDialog = false;
+
+        await CloseEventCallback.InvokeAsync(true);
+        StateHasChanged();
+    }
+
+
+}
