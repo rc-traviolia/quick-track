@@ -20,6 +20,7 @@ namespace QuickTrackWeb.Shared.Models
         public int WeekId { get; set; }
 
         [Required]
+        [Range(0, Int32.MaxValue, ErrorMessage = "This must be a positive integer")]
         public int Progress { get; set; }
     }
 }

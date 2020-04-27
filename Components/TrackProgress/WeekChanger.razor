@@ -1,11 +1,10 @@
-﻿@using QuickTrackWeb.Services.WeekDataService;
-@using QuickTrackWeb.Components.TrackProgress;
+﻿@using QuickTrackWeb.Services.WeekDataService
 @inject IWeekDataService _weekDataService
 
     <div class="week-display-area">
 
-
-        <button class="previous-week-button">previous</button>
+        <div class="week-label"> WEEK </div>
+        <button class="previous-week-button" @onclick="@GoBackOneWeek">previous</button>
         <div class="week-number">@PickedWeekNum</div>
 
         @if (PickedWeekNum == GetMaxWeekNum())
@@ -27,25 +26,30 @@
         }
         else
         {
-            <button class="next-week-button">next</button>
+            <button class="next-week-button" @onclick="@GoForwardOneWeek">next</button>
         }
-        <div class="week-label"> working on week </div>
-        <div class="week-label"> //TODO: add date here</div>
-    </div>
-    <div class="t1">
+
+    <div class="week-label">
+        <div class="vertical-spacer" style="height:5px"></div>
         @if (PickedWeekNum > 0)
         {
-            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().Number</div>
-            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().MondayDate</div>
-            <div>@AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault().DayCount</div>
-        }
-
-
-    </div>
+            var pickedWeek = @AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault();
+        <div class="week-label">@pickedWeek.MondayDate.ToString("MM/dd/yyyy")   -   @pickedWeek.MondayDate.AddDays(pickedWeek.DayCount - 1).ToString("MM/dd/yyyy")</div>
+               
+                }
+                else
+                {
+                <div class="week-label">Please Create a week to Continue</div>
+                }
+            </div>
+        </div>
 
 @code {
     [Parameter]
     public string classEntityOwnerIdentityName { get; set; }
+
+    [Parameter]
+    public EventCallback<WeekWithoutProgressDto> WeekChangedCallback { get; set; }
 
     protected IEnumerable<WeekWithoutProgressDto> AllWeeks;
 
@@ -57,6 +61,7 @@
 
         AllWeeks = (await _weekDataService.GetWeeksForClass(classEntityOwnerIdentityName));
         PickedWeekNum = GetMaxWeekNum();
+        WeekChangedCallback.InvokeAsync(GetPickedWeek());// PickedWeekNum); //TODO: add here, return GetPickedWeek() instead
 
 
     }
@@ -64,6 +69,25 @@
     public async void Dialog_OnDialogClose()
     {
         AllWeeks = (await _weekDataService.GetWeeksForClass(classEntityOwnerIdentityName));
+        PickedWeekNum = GetMaxWeekNum();
+        WeekChangedCallback.InvokeAsync(GetPickedWeek());//PickedWeekNum);
+        StateHasChanged();
+    }
+
+
+    public async void GoBackOneWeek()
+    {
+        if(PickedWeekNum > 1)
+        {
+            PickedWeekNum--;
+        }
+        WeekChangedCallback.InvokeAsync(GetPickedWeek());//PickedWeekNum);
+        StateHasChanged();
+    }
+    public async void GoForwardOneWeek()
+    {
+        PickedWeekNum++;
+        WeekChangedCallback.InvokeAsync(GetPickedWeek());//PickedWeekNum);
         StateHasChanged();
     }
     private int GetMaxWeekNum()
@@ -72,12 +96,21 @@
         {
             return 0;
         }
-        if(AllWeeks.Count() == 0)
+        if (AllWeeks.Count() == 0)
         {
             return 0;
         }
 
         return AllWeeks.Max(y => y.Number);
+    }
+    private WeekWithoutProgressDto GetPickedWeek()
+    {
+        if(PickedWeekNum <= 0)//was ==, but I'm silly
+        {
+            return WeekWithoutProgressDto.GetNullWeek();
+        }
+
+        return AllWeeks.Where(w => w.Number == PickedWeekNum).FirstOrDefault();
     }
 
 }

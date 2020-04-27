@@ -23,9 +23,8 @@ namespace QuickTrackWeb.Pages
         public IClassEntityDataService _classEntityDataService { get; set; }
         public ClassEntityDto PickedClassEntity { get; set; }
 
-        [Inject]
-        public IWeekDataService _weekDataService { get; set; }
-        public WeekDto PickedWeek { get; set; }
+        public WeekWithoutProgressDto PickedWeek { get; set; } = WeekWithoutProgressDto.GetNullWeek();
+
 
 
 
@@ -34,6 +33,7 @@ namespace QuickTrackWeb.Pages
 
             LoggedInUserName = (await authenticationStateTask).User.Identity.Name;
             PickedClassEntity = (await _classEntityDataService.GetClassEntity(LoggedInUserName));
+            StateHasChanged();
 
         }
         public async void Dialog_OnDialogClose()
@@ -49,6 +49,11 @@ namespace QuickTrackWeb.Pages
             StateHasChanged();
         }
 
+        public async void WeekChanged_Callback(WeekWithoutProgressDto pickedWeek)
+        {
+            PickedWeek = pickedWeek;
+            StateHasChanged();
+        }
         protected void AddClassEntity()
         {
            // AddClassEntityDialog.Show(LoggedInUserName);

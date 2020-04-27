@@ -1,73 +1,108 @@
-﻿@using QuickTrackWeb.Services.StudentDataService;
-@using QuickTrackWeb.Components.TrackProgress;
-@inject IStudentDataService _studentDataService;
+﻿@using QuickTrackWeb.Services.StudentDataService
+@using QuickTrackWeb.Services.WeekDataService
+@using QuickTrackWeb.Services.ProgressRecordDataService
+@inject IStudentDataService _studentDataService
+@inject IProgressRecordDataService _progressRecordDataService
 
-<div class="student-display-area">
-    <ul class="display-list">
-        <li class="display-list-header" style="color:white">
-            @if (StudentList != null)
+@if (pickedClassEntity != null)
+{
+
+    <div class="progress-display">
+        <ul class="progress-list">
+            <li class="progress-list-header" style="color:white">
+                <div class="progress-item">
+                    Student
+                </div>
+                @{
+
+
+                    var lastColumn = pickedClassEntity.TrackedItems.Count();
+                    var thisColumn = 0;
+                    @foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                    {
+                        thisColumn++;
+                        if (thisColumn == lastColumn)
+                        {
+                            <div class="progress-item progress-item-last">
+                                @trackedItem.Name
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="progress-item">
+                                @trackedItem.Name
+                            </div>
+                        }
+
+                    }
+                }
+            </li>
+            @if (pickedClassEntity.Students != null)
             {
-                <div class="header-text">Students (@StudentList.Count() Total) </div>
-            }
-            else
-            {
-                <div class="header-text">Students (0 Total) </div>
-            }
-
-
+                var lastColIndex = pickedClassEntity.TrackedItems.Count();
+              @foreach (var student in pickedClassEntity.Students)
+               {
+                   var thisStudent = student;
+        <li class="progress-list-item">
+            <div class="progress-item">
+                @student.Name
+            </div>
             @{
-                var ownerIdentityName = classEntityOwnerIdentityName;
+                var thisColIndex = 0;
+                foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                {
+                    thisColIndex++;
+                    var thisTrackedItem = trackedItem;
 
-                <button class="oi-oi-plus blue-button header-button" @onclick="@(e => addStudentDialog.Show(ownerIdentityName))">Add</button>
-                <AddStudentDialog @ref="addStudentDialog" CloseEventCallback="@Dialog_OnDialogClose"></AddStudentDialog>
+                    if (thisColIndex == lastColIndex)
+                    {
+                        <div class="progress-item progress-item-last">
+                            @student.Id & @trackedItem.Id
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="progress-item">
+                            @student.Id & @trackedItem.Id
+                        </div>
+                    }
+
+                }
             }
         </li>
-        @if (StudentList != null)
-        {
-
-            @foreach (var student in StudentList)
-            {
-                var studentToDelete = student;
-
-                <li class="display-list-item">
-                    <div class="item-text">
-                        @student.Name
-                    </div>
-                    <button class="oi-oi-delete red-button item-button" @onclick="@(e => deleteStudentDialog.Show(studentToDelete))">Remove</button>
-                    <DeleteStudentDialog @ref="deleteStudentDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteStudentDialog>
-                </li>
 
 
 
 
+                }
             }
-        }
 
 
-    </ul>
+        </ul>
 </div>
+}
+else
+{
+    <h1 style="color:red">You must create a class to continue</h1>
+}
 
 @code {
     [Parameter]
-    public string classEntityOwnerIdentityName { get; set; }
+    public ClassEntityDto pickedClassEntity { get; set; }
 
-    protected IEnumerable<StudentWithoutProgressDto> StudentList;
-
-    protected DeleteStudentDialog deleteStudentDialog { get; set; }
-
-    protected AddStudentDialog addStudentDialog { get; set; }
+    [Parameter]
+    public WeekWithoutProgressDto pickedWeek { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        StateHasChanged();
 
-        StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));
 
     }
 
     public async void Dialog_OnDialogClose()
     {
-        StudentList = (await _studentDataService.GetStudentsForClass(classEntityOwnerIdentityName));
-        StateHasChanged();
+
     }
 
 }

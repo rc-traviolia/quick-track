@@ -16,32 +16,12 @@ else
     }
     else
     {
+        <h3 style="color:green">Tracking Progress for:</h3>
         <h1 style="color:green">@PickedClassEntity.Name</h1>
 
-       <WeekChanger classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName"></WeekChanger>
-        <div class="display-spacer"></div>
-        <p>end of page</p>
-
-
-        @*<AuthorizeView>
-                    <Authorized>
-                        <div class="footer-display-area">
-                            @if (@context.User.IsInRole("Administrator") == false)
-                            {
-                                <button class="btn red-button" @onclick="@DeleteClassEntity">Delete Class</button>
-                                <DeleteClassEntityDialog @ref="DeleteClassEntityDialog" CloseEventCallback="@Dialog_OnDialogClose"></DeleteClassEntityDialog>
-                    <ul>
-                @foreach (var c in ClassEntities)
-                {
-                    <li>@c.Name -> @c.OwnerIdentityName</li>
-                }
-            </ul>
-                            }
-
-                        </div>
-
-                    </Authorized>
-                </AuthorizeView>*@
+        <WeekChanger classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName" WeekChangedCallback="@WeekChanged_Callback"></WeekChanger>
+        <div class="vertical-spacer"style="height:1px"></div>
+        <TestProgressGrid pickedClassEntity="@PickedClassEntity" pickedWeek ="@PickedWeek"></TestProgressGrid>
 
     }
 

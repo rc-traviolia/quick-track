@@ -12,6 +12,7 @@ using QuickTrackWeb.Services.ClassEntityDataService;
 using QuickTrackWeb.Services.StudentDataService;
 using QuickTrackWeb.Services.TrackedItemDataService;
 using QuickTrackWeb.Services.WeekDataService;
+using QuickTrackWeb.Services.ProgressRecordDataService;
 using QuickTrackWeb.Services.DownloadFile;
 using QuickTrackWeb.EmbeddedApi.Services;
 using System;
@@ -78,6 +79,10 @@ namespace QuickTrackWeb
                 client.BaseAddress = new Uri("https://localhost:44389/");
             });
             services.AddHttpClient<IWeekDataService, DefaultWeekDataService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44389/");
+            });
+            services.AddHttpClient<IProgressRecordDataService, DefaultProgressRecordDataService>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:44389/");
             });

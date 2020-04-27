@@ -1,0 +1,105 @@
+﻿@using QuickTrackWeb.Services.StudentDataService
+@using QuickTrackWeb.Services.WeekDataService
+@using QuickTrackWeb.Services.ProgressRecordDataService
+@inject IStudentDataService _studentDataService
+@inject IProgressRecordDataService _progressRecordDataService
+
+@if (pickedClassEntity != null)
+{
+    <div class="progress-display-area">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    @foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                    {
+                        <th>@trackedItem.Name</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in pickedClassEntity.Students)
+                {
+                <tr>
+                    <td>@student.Name</td>
+                    @foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                    {
+                        ProgressRecordForCreationDto thisProgressRecord = new ProgressRecordForCreationDto();
+
+                        thisProgressRecord.ClassEntityId = pickedClassEntity.Id;
+                        thisProgressRecord.WeekId = pickedWeek.Id;
+                        thisProgressRecord.StudentId = student.Id;
+                        thisProgressRecord.TrackedItemId = trackedItem.Id;
+                        thisProgressRecord.Progress = 0;
+                       
+                        if (ProgressExists(student.Id, trackedItem.Id))
+                        {
+                            thisProgressRecord.Progress = GetProgress(student.Id, trackedItem.Id);
+                        }
+                     <td>
+                         <input type="number" @bind-value="@thisProgressRecord.Progress">
+                    </td>
+                        @*<EditForm Model="@thisProgressRecord">
+                            <DataAnnotationsValidator />
+                                <InputNumber class="progress-input" @bind-Value="@thisProgressRecord.Progress" placeholder=0></InputNumber>
+                                <ValidationMessage For="@(() => thisProgressRecord.Progress)" />
+                        </EditForm>*@
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <h1 style="color:red">You must create a class to continue</h1>
+}
+
+@code {
+    [Parameter]
+    public ClassEntityDto pickedClassEntity { get; set; }
+
+    [Parameter]
+    public WeekWithoutProgressDto pickedWeek { get; set; }
+
+    protected IEnumerable<ProgressRecordDto> ProgressRecords { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(pickedWeek.Id > 0)
+        {
+            ProgressRecords = await _progressRecordDataService.GetProgressRecordsForClassEntityAndWeek(pickedClassEntity.OwnerIdentityName, pickedWeek.Id);
+        }
+        StateHasChanged();
+
+
+    }
+
+    public async void Dialog_OnDialogClose()
+    {
+
+    }
+
+    public async void UpdateProgress(ProgressRecordForCreationDto updatedProgressRecord)
+    {
+        await _progressRecordDataService.AddOrReplaceProgressRecord(updatedProgressRecord);
+        StateHasChanged();
+    }
+    public bool ProgressExists(int studentId, int trackedItemId)
+    {
+        if(ProgressRecords == null || ProgressRecords.Count() < 1)
+        {
+            return false;
+        }
+        if(ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault() == null)
+        {
+            return false;
+        }
+        return true;
+    }
+    public int GetProgress(int studentId, int trackedItemId)
+    {
+        return ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault().Progress;
+    }
+}

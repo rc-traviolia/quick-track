@@ -6,17 +6,49 @@ h1 {
     font-size: 3.75rem;
     font-family: 'Chalkboard-header';
 }
-.week-display-area .previous-week-button{
-    float:left;
+h3 {
+    font-family: 'Chalkboard-header';
+}
+.progress-display-area{
+    color:white;
+}
+.week-display-area {
+    width: 20%;
+    min-width: 350px;
 }
 .week-display-area .week-number {
-    float:left;
+    float: left;
+    width: 26%;
+    margin-left: 4%;
+    margin-right: 4%;
+    font-size: 20px;
+    vertical-align: middle !important;
+    background-color: white;
+    color: black !important;
+    font-weight: bolder;
+    text-align: center
 }
-.week-display-area .next-week-button {
-    float:none;
-}
-.week-display-area .week-label {
+    .week-display-area .previous-week-button {
+        float: left;
+        width: 33%;
+        border: 2px solid white;
+        padding-left: 15px;
+        padding-right: 15px;;
+    }
+    .week-display-area .next-week-button {
+        float: none;
+        width: 33%;
+    }
+    .week-display-area .week-label {
+        width: 100%;
+        text-align: center;
+    }
+
+.vertical-spacer{
     width:100%;
+}
+.horizontal-spacer {
+    height: 100%;
 }
 .display-space {
     min-height: 100%;
@@ -35,6 +67,30 @@ h1 {
     width:3%; 
     height:1px;
 }
+.progress-display{
+
+}
+.progress-display .progress-list{
+    list-style:none;
+    padding-left:0px;
+}
+
+    .progress-display .progress-list .progress-list-header {
+        box-sizing: border-box;
+        font-family: Chalkboard-header;
+    }
+    .progress-display .progress-list .progress-list-item {
+        box-sizing: border-box;
+    }
+
+.progress-item {
+    box-sizing: border-box;
+    float: left;
+}
+.progress-item-last {
+    /*float: none !important;*/
+}
+
 
 .student-display-area {
     width: 40%;

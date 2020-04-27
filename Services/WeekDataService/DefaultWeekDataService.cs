@@ -40,9 +40,6 @@ namespace QuickTrackWeb.Services.WeekDataService
 
         public async Task<IEnumerable<WeekWithoutProgressDto>> GetWeeksForClass(string classEntityOwnerIdentityName)
         {
-            var response = (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/weeks"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-            Console.WriteLine(response.ToString());
-
             return await JsonSerializer.DeserializeAsync<IEnumerable<WeekWithoutProgressDto>>
                      (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/weeks"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }

@@ -17,6 +17,10 @@ namespace QuickTrackWeb.Shared.Models
         [Range(0, 5, ErrorMessage ="A week can be from 0 (an entire week off) to 5 (full M-F week) days long")]
         public int DayCount { get; set; }
 
+        public WeekForCreationDto()
+        {
+
+        }
         public WeekForCreationDto(WeekWithoutProgressDto previousWeek)
         {
             Number = previousWeek.Number + 1;
