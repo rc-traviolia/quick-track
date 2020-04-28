@@ -4,8 +4,10 @@
 @inject IStudentDataService _studentDataService
 @inject IProgressRecordDataService _progressRecordDataService
 
-@if (pickedClassEntity != null)
+@if (pickedClassEntity != null && pickedWeek == null && ProgressRecords != null)
 {
+
+
     <div class="progress-display-area">
         <table class="table">
             <thead>
@@ -18,43 +20,67 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var student in pickedClassEntity.Students)
-                {
-                <tr>
-                    <td>@student.Name</td>
-                    @foreach (var trackedItem in pickedClassEntity.TrackedItems)
-                    {
-                        ProgressRecordForCreationDto thisProgressRecord = new ProgressRecordForCreationDto();
+                @{
+                    var sIterator = -1;
+                    var tiIterator = -1;
 
-                        thisProgressRecord.ClassEntityId = pickedClassEntity.Id;
-                        thisProgressRecord.WeekId = pickedWeek.Id;
-                        thisProgressRecord.StudentId = student.Id;
-                        thisProgressRecord.TrackedItemId = trackedItem.Id;
-                        thisProgressRecord.Progress = 0;
-                       
-                        if (ProgressExists(student.Id, trackedItem.Id))
-                        {
-                            thisProgressRecord.Progress = GetProgress(student.Id, trackedItem.Id);
-                        }
-                     <td>
-                         <input type="number" @bind-value="@thisProgressRecord.Progress">
-                    </td>
-                        @*<EditForm Model="@thisProgressRecord">
-                            <DataAnnotationsValidator />
-                                <InputNumber class="progress-input" @bind-Value="@thisProgressRecord.Progress" placeholder=0></InputNumber>
-                                <ValidationMessage For="@(() => thisProgressRecord.Progress)" />
-                        </EditForm>*@
+                    @foreach (var student in pickedClassEntity.Students)
+                    {
+                        sIterator++;
+                        <tr>
+                            <td>@student.Name</td>
+                            @foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                            {
+                                tiIterator++;
+                                ProgressRecordForCreationDto thisProgressRecord = ProgressRecordsForUpdate[sIterator, tiIterator];
+
+                                <td>
+                                    <ProgressInput thisProgressRecord="@thisProgressRecord"></ProgressInput>
+                                    <input type="number" @bind-value="@thisProgressRecord.Progress">
+                                </td>
+                            }
+                        </tr>
                     }
-                </tr>
                 }
             </tbody>
         </table>
     </div>
+
 }
 else
 {
-    <h1 style="color:red">You must create a class to continue</h1>
+    <h3 style="color:red">You must:</h3>
+    <ul>
+        @if (pickedClassEntity == null)
+        {
+            <li><h3 style="color:red">Create a Class</h3></li>
+        }
+        @if (pickedClassEntity.Students == null)
+        {
+            <li><h3 style="color:red">add at least one student to your</h3></li>
+        }
+        @if (pickedClassEntity.TrackedItems == null)
+        {
+            <li><h3 style="color:red">add at least one tracked item to your class</h3></li>
+        }
+        @if (pickedWeek.Number <= 0)
+        {
+            <li><h3 style="color:red">Create a week</h3></li>
+        }
+    </ul>
+
+    <h3 style="color:blue">Week @pickedWeek.Number</h3>
+    <div>@pickedWeek.Number</div>
+    @if(newData != null)
+    {
+        <div>SUCCESS</div>
+    }
+    else
+    {
+        <div>FAILURE</div>
+    }
 }
+
 
 @code {
     [Parameter]
@@ -63,36 +89,70 @@ else
     [Parameter]
     public WeekWithoutProgressDto pickedWeek { get; set; }
 
+
     protected IEnumerable<ProgressRecordDto> ProgressRecords { get; set; }
+    protected ProgressRecordForCreationDto[,] ProgressRecordsForUpdate { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if(pickedWeek.Id > 0)
+        if (pickedWeek.Number > 0)
         {
             ProgressRecords = await _progressRecordDataService.GetProgressRecordsForClassEntityAndWeek(pickedClassEntity.OwnerIdentityName, pickedWeek.Id);
+
+            var studentCount = pickedClassEntity.Students.Count();
+            var trackedItemCount = pickedClassEntity.TrackedItems.Count();
+            ProgressRecordsForUpdate = new ProgressRecordForCreationDto[studentCount, trackedItemCount];
+
+            var sIterator = -1;
+            var tiIterator = -1;
+            foreach (var student in pickedClassEntity.Students)
+            {
+                sIterator++;
+
+                foreach (var trackedItem in pickedClassEntity.TrackedItems)
+                {
+                    tiIterator++;
+                    if (ProgressExists(student.Id, trackedItem.Id))
+                    {
+                        ProgressRecordsForUpdate[sIterator, tiIterator] = new ProgressRecordForCreationDto(GetProgressRecord(student.Id, trackedItem.Id));
+                    }
+                    else
+                    {
+                        ProgressRecordsForUpdate[sIterator, tiIterator] = new ProgressRecordForCreationDto()
+                        {
+                            StudentId = student.Id,
+                            TrackedItemId = trackedItem.Id,
+                            ClassEntityId = pickedClassEntity.Id,
+                            WeekId = pickedWeek.Id,
+                            Progress = 0
+                        };
+                    }
+                }
+            }
+
+
         }
         StateHasChanged();
-
-
     }
-
     public async void Dialog_OnDialogClose()
     {
 
     }
 
-    public async void UpdateProgress(ProgressRecordForCreationDto updatedProgressRecord)
+    public void UpdateProgress(ProgressRecordForCreationDto updatedProgressRecord)
     {
-        await _progressRecordDataService.AddOrReplaceProgressRecord(updatedProgressRecord);
+        _progressRecordDataService.AddOrReplaceProgressRecord(updatedProgressRecord);
         StateHasChanged();
+
+
     }
     public bool ProgressExists(int studentId, int trackedItemId)
     {
-        if(ProgressRecords == null || ProgressRecords.Count() < 1)
+        if (ProgressRecords == null || ProgressRecords.Count() < 1)
         {
             return false;
         }
-        if(ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault() == null)
+        if (ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault() == null)
         {
             return false;
         }
@@ -101,5 +161,9 @@ else
     public int GetProgress(int studentId, int trackedItemId)
     {
         return ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault().Progress;
+    }
+    public ProgressRecordDto GetProgressRecord(int studentId, int trackedItemId)
+    {
+        return ProgressRecords.Where(pr => pr.StudentId == studentId && pr.TrackedItemId == trackedItemId).FirstOrDefault();
     }
 }

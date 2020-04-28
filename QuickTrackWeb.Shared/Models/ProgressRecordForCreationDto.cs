@@ -22,5 +22,18 @@ namespace QuickTrackWeb.Shared.Models
         [Required]
         [Range(0, Int32.MaxValue, ErrorMessage = "This must be a positive integer")]
         public int Progress { get; set; }
+
+        public ProgressRecordForCreationDto()
+        {
+
+        }
+        public ProgressRecordForCreationDto(ProgressRecordDto existingProgressRecord)
+        {
+            ClassEntityId = existingProgressRecord.ClassEntityId;
+            StudentId = existingProgressRecord.StudentId;
+            WeekId = existingProgressRecord.WeekId;
+            TrackedItemId = existingProgressRecord.TrackedItemId;
+            Progress = existingProgressRecord.Progress;
+        }
     }
 }
