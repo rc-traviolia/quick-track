@@ -6,6 +6,13 @@
     link.click();
     document.body.removeChild(link);
 }
+
+
+
+
+
+
+
 function SavePdf(fileName, fileBytes) {
     var link = document.createElement('a');
     link.download = fileName;

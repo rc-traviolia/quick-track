@@ -46,10 +46,11 @@ namespace QuickTrackWeb
 
 
             services.AddDbContext<ApplicationDbContext>(options =>
-             //options.UseNpgsql(
-             options.UseSqlServer(
+             options.UseNpgsql(
 
-            //Configuration.GetConnectionString("DefaultConnection")));
+            //options.UseSqlServer(
+
+
 #if DEBUG
             Configuration.GetConnectionString("DefaultConnection")));
 #else
@@ -67,24 +68,24 @@ namespace QuickTrackWeb
 
             services.AddHttpClient<IClassEntityDataService, DefaultClassEntityDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44389/");
+                client.BaseAddress = new Uri("https://quicktrack.rc-traviolia.com/");
             });
 
             services.AddHttpClient<IStudentDataService, DefaultStudentDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44389/");
+                client.BaseAddress = new Uri("https://quicktrack.rc-traviolia.com/");
             });
             services.AddHttpClient<ITrackedItemDataService, DefaultTrackedItemDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44389/");
+                client.BaseAddress = new Uri("https://quicktrack.rc-traviolia.com/");
             });
             services.AddHttpClient<IWeekDataService, DefaultWeekDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44389/");
+                client.BaseAddress = new Uri("https://quicktrack.rc-traviolia.com/");
             });
             services.AddHttpClient<IProgressRecordDataService, DefaultProgressRecordDataService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44389/");
+                client.BaseAddress = new Uri("https://quicktrack.rc-traviolia.com/");
             });
 
             //For the Standalone Api: client.BaseAddress = new Uri("https://localhost:44369/");
