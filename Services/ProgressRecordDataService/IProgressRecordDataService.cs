@@ -9,6 +9,7 @@ namespace QuickTrackWeb.Services.ProgressRecordDataService
     public interface IProgressRecordDataService
     {
         Task<IEnumerable<ProgressRecordDto>> GetProgressRecordsForClassEntityAndWeek(string classEntityOwnerIdentityName, int weekId);
+        Task<IEnumerable<ProgressRecordDto>> GetAllProgressForClassEntity(string classEntityOwnerIdentityName);
         Task<ProgressRecordDto> AddOrReplaceProgressRecord(ProgressRecordForCreationDto progressRecord);
         Task DeleteProgressRecord(int progressRecordId);
     }

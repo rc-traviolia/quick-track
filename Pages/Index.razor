@@ -8,7 +8,7 @@
 @inject NavigationManager Navigation;
 
 @using Services.DownloadFile;
-@inject DownloadFileService _downloadFileService;
+@inject IDownloadFileService _downloadFileService;
 @inject IJSRuntime JSRuntime;
 
 
@@ -29,9 +29,9 @@
         else
         {
             <p style="font-weight:bold">Select an option on the left to continue.</p>
-            <p>Class Maintenance: Where you maintain the categories that you are tracking and list of students to track.</p>
-            <p>Track Progress: Where you input the values that you are tracking.</p>
-            <p>View/Download Reports: Where you view and export the results of the tracking.</p>
+            <p> <span class="underline">Class Maintenance:</span> Where you maintain the categories that you are tracking and list of students to track.</p>
+            <p> <span class="underline">Track Progress:</span> Where you input the values that you are tracking.</p>
+            <p> <span class="underline">View/Download Reports:</span> Where you view and export the results of the tracking.</p>
         }
     </Authorized>
     <NotAuthorized>
@@ -89,24 +89,24 @@
 
     public async void testTest()
     {
-        fileName = "testme.zip";
-        var byteContent = _downloadFileService.BuildZipFileBytes();
-        await JSRuntime.InvokeAsync<object>(
-            "Test",
-            fileName,
-            byteContent
-        // noteContent
-        );
+        //fileName = "testme.zip";
+        //var byteContent = _downloadFileService.BuildZipFileBytes();
+        //await JSRuntime.InvokeAsync<object>(
+        //    "Test",
+        //    fileName,
+        //    byteContent
+        //// noteContent
+        //);
     }
     public async void testPdf()
     {
-        var byteContent = _downloadFileService.BuildSingleStudentReport(currentUser);
-        await JSRuntime.InvokeAsync<object>(
-            "PdfSaveAs",
-            fileName,
-            byteContent
-        // noteContent
-        );
+        //var byteContent = _downloadFileService.BuildSingleStudentReport(currentUser);
+        //await JSRuntime.InvokeAsync<object>(
+        //    "PdfSaveAs",
+        //    fileName,
+        //    byteContent
+        //// noteContent
+        //);
 
     }
 }

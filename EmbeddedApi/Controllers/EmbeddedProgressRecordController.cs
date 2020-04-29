@@ -63,6 +63,22 @@ namespace QuickTrackWeb.EmbeddedApi.Controllers
             return Ok(results);
 
         }
+        [HttpGet("{classEntityOwnerIdentityName}/progressrecords")]
+        public IActionResult GetAllProgressRecordsForClassEntity(string classEntityOwnerIdentityName)
+        {
+            if (!_repo.ClassEntityExists(classEntityOwnerIdentityName))
+            {
+                return NotFound();
+            }
+
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            var progressRecordsToReturn = _repo.GetAllProgressRecordsFromClassEntity(classEntityOwnerIdentityName);
+            var results = _mapper.Map<IEnumerable<ProgressRecordDto>>(progressRecordsToReturn);
+
+
+            return Ok(results);
+
+        }
 
         [HttpPost("progressrecords")]
         public IActionResult CreateReplaceProgressRecord(

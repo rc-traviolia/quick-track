@@ -36,30 +36,30 @@ namespace QuickTrackWeb.Services.DownloadFile
             return null;
         }
 
-        [HttpGet, Route("api/{name}")]
-        public ActionResult Get(string name)
-        {
-            if(name == "tpdf")
-            {
-                var buffer = _pdfService.BuildSingleStudentReport("notarealusername@not.real");// Encoding.UTF8.GetBytes("Hello! Content is here.");
-                var stream = new MemoryStream(buffer);
-                //var stream = new FileStream(filename);
+        //[HttpGet, Route("api/{name}")]
+        //public ActionResult Get(string name)
+        //{
+        //    if(name == "tpdf")
+        //    {
+        //        var buffer = _pdfService.BuildSingleStudentReport("notarealusername@not.real");// Encoding.UTF8.GetBytes("Hello! Content is here.");
+        //        var stream = new MemoryStream(buffer);
+        //        //var stream = new FileStream(filename);
 
-                var result = new FileStreamResult(stream, "application/pdf");
-                result.FileDownloadName = "test.pdf";
-                return result;
-            }
-            else
-            {
-                var buffer = Encoding.UTF8.GetBytes("Hello! Content is here.");
-                var stream = new MemoryStream(buffer);
-                //var stream = new FileStream(filename);
+        //        var result = new FileStreamResult(stream, "application/pdf");
+        //        result.FileDownloadName = "test.pdf";
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        var buffer = Encoding.UTF8.GetBytes("Hello! Content is here.");
+        //        var stream = new MemoryStream(buffer);
+        //        //var stream = new FileStream(filename);
 
-                var result = new FileStreamResult(stream, "text/plain");
-                result.FileDownloadName = "test.txt";
-                return result;
-            }
+        //        var result = new FileStreamResult(stream, "text/plain");
+        //        result.FileDownloadName = "test.txt";
+        //        return result;
+        //    }
             
-        }
+        //}
     }
 }

@@ -36,6 +36,12 @@ namespace QuickTrackWeb.Services.ProgressRecordDataService
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<ProgressRecordDto>> GetAllProgressForClassEntity(string classEntityOwnerIdentityName)
+        {
+            return await JsonSerializer.DeserializeAsync<IEnumerable<ProgressRecordDto>>
+                    (await _httpClient.GetStreamAsync($"api/classentities/{classEntityOwnerIdentityName}/progressrecords"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+
         public async Task<IEnumerable<ProgressRecordDto>> GetProgressRecordsForClassEntityAndWeek(string classEntityOwnerIdentityName, int weekId)
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<ProgressRecordDto>>

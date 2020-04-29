@@ -97,7 +97,7 @@ namespace QuickTrackWeb
 
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-            services.AddTransient<DownloadFileService>();
+            services.AddTransient<IDownloadFileService, DownloadFileService>();
             
             services.AddScoped<SessionDataService>();
 

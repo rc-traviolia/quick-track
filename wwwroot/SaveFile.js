@@ -1,4 +1,4 @@
-﻿function Test(fileName, fileContent) {
+﻿function SaveByteStream(fileName, fileContent) {
     var link = document.createElement('a');
     link.download = fileName;
     link.href = "data:application/octet-stream;base64," + encodeURIComponent(fileContent)
@@ -6,7 +6,18 @@
     link.click();
     document.body.removeChild(link);
 }
-function SaveZipFolder() {
+function SavePdf(fileName, fileBytes) {
+    var link = document.createElement('a');
+    link.download = fileName;
+    link.href = "data:application/octet-stream;base64," + fileBytes;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+
+function deprecatedSaveZipFolder() {
     var zip = new JSZip();
 
     // Add an top-level, arbitrary text file with contents

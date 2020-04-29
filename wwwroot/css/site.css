@@ -9,6 +9,15 @@ h1 {
 h3 {
     font-family: 'Chalkboard-header';
 }
+table{
+    color:white !important;
+}
+.underline{
+    text-decoration:underline;
+}
+input{
+    text-align:center;
+}
 .progress-display-area{
     color:white;
 }
@@ -161,6 +170,14 @@ h3 {
     border-radius: 6px;
     border-width: 2px;
     background: linear-gradient(147deg, rgba(2,0,36,1) 0%, rgba(57,62,193,1) 0%, rgba(0,242,203,1) 100%);
+}
+.green-button {
+    color: darkgreen;
+    font-weight: bold;
+    border-color: green;
+    border-radius: 6px;
+    border-width: 2px;
+    background: linear-gradient(129deg, rgba(7,125,7,1) 0%, rgba(67,187,19,1) 67%, rgba(133,254,32,1) 100%);
 }
 @font-face {
     font-family: 'Chalkboard-header'; /*a name to be used later*/

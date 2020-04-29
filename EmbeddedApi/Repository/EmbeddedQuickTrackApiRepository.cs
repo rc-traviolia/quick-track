@@ -262,6 +262,17 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
                 pr.ClassEntityId == classEntity.Id &&
                 pr.WeekId == weekId);
         }
+
+        public IEnumerable<ProgressRecord> GetAllProgressRecordsFromClassEntity(string classEntityOwnerIdentityName)
+        {
+            //this is lazy and shouldn't need to happen, but my site is, at this point,
+            //needing to be completed... 
+            //copied the code and am leaving the comment... RT 4/29/2020
+            var classEntity = GetClassEntity(classEntityOwnerIdentityName);
+
+            return _context.ProgressRecords.Where(pr =>
+                pr.ClassEntityId == classEntity.Id);
+        }
     }
 }
 

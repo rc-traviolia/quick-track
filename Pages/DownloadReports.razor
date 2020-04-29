@@ -1,16 +1,87 @@
 ﻿@page "/downloadreports"
+@inherits DownloadReportsBase
+@inject IJSRuntime JSRuntime
 
-<h2>Download Reports</h2>
 
-<p>Current count: @currentCount</p>
+@if (PickedClassEntity == null)
+{
+    <p>Loading...</p>
+}
+else
+{
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-@code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    @if (PickedClassEntity.Id == -1)
     {
-        currentCount++;
+        <h1 style="color:red">@PickedClassEntity.Name</h1>
+    }
+    else
+    {
+        <h3 style="color:green">Download Reports for:</h3>
+        <h1 style="color:green">@PickedClassEntity.Name</h1>
+
+        <WeekChanger classEntityOwnerIdentityName="@PickedClassEntity.OwnerIdentityName" WeekChangedCallback="@WeekChanged_Callback"></WeekChanger>
+        <div class="vertical-spacer" style="height:1px"></div>
+        if (PickedClassEntity.Students == null || PickedClassEntity.TrackedItems == null || PickedClassEntity.Weeks == null)
+        {
+            <h3 style="color:red">You must:</h3>
+            <ul>
+                @if (PickedClassEntity == null)
+                {
+                    <li><h3 style="color:red">Create a Class</h3></li>
+                }
+                @if (PickedClassEntity.Students == null)
+                {
+                    <li><h3 style="color:red">add at least one student to your class</h3></li>
+                }
+                @if (PickedClassEntity.TrackedItems == null)
+                {
+                    <li><h3 style="color:red">add at least one tracked item to your class</h3></li>
+                }
+                @if (PickedClassEntity.Weeks == null)
+                {
+                    <li><h3 style="color:red">Create a week</h3></li>
+                }
+            </ul>
+        }
+        else
+        {
+            <br />
+            <button class="blue-button" style="font-size:30px; width:350px" @onclick="DownloadReportsForWeek">Get Week Reports</button>
+            <div class="vertical-spacer" style="height:1px"></div>
+            <br />
+            <button class="green-button" style="font-size:30px; width:350px" @onclick="DownloadClassSummary">Get Class Summary</button>
+        }
+
+    }
+}
+
+@code{
+
+    protected async void DownloadReportsForWeek()
+    {
+        var fileName = $"{PickedClassEntity.Name} Reports - Week {PickedWeek.Number}.zip";
+        var dataFromService = await _progressRecordDataService.GetProgressRecordsForClassEntityAndWeek(PickedClassEntity.OwnerIdentityName, PickedWeek.Id);
+        var byteContent = _downloadFileService.GetWeekOfReports(PickedClassEntity, PickedWeek, dataFromService);
+        await JSRuntime.InvokeAsync<object>(
+            "SaveByteStream",
+            fileName,
+            byteContent
+        );
+    }
+    protected async void DownloadClassSummary()
+    {
+        var earliestDate = PickedClassEntity.Weeks.OrderBy(w => w.Number).First().MondayDate.ToString("MM-dd-yyyy");
+        var latestDate = PickedClassEntity.Weeks.OrderByDescending(w => w.Number).First().MondayDate.AddDays(
+            PickedClassEntity.Weeks.OrderByDescending(w => w.Number).First().DayCount - 1)
+            .ToString("MM-dd-yyyy");
+        var fileName = $"SUMMARY_{PickedClassEntity.Name} - {earliestDate} to {latestDate}.pdf";
+        var dataFromService = await _progressRecordDataService.GetAllProgressForClassEntity(PickedClassEntity.OwnerIdentityName);
+        var byteContent = _downloadFileService.GetClassSummary(PickedClassEntity, PickedWeek, dataFromService);
+        await JSRuntime.InvokeAsync<object>(
+            "SaveByteStream",
+            fileName,
+            byteContent
+        );
     }
 }
