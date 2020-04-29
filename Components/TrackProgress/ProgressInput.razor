@@ -1,4 +1,7 @@
-﻿<input type="number" @bind-value="@thisProgressRecord.Progress">
+﻿@using Services.ProgressRecordDataService
+@inject IProgressRecordDataService _progressRecordDataService
+ 
+<input type="number" @bind-value="@thisProgressRecord.Progress" @onfocusout="@(e => _progressRecordDataService.AddOrReplaceProgressRecord(thisProgressRecord))">
 
 @code {
 

@@ -4,7 +4,7 @@
 @inject IStudentDataService _studentDataService
 @inject IProgressRecordDataService _progressRecordDataService
 
-@if (pickedClassEntity != null && pickedWeek == null && ProgressRecords != null)
+@if(ProgressRecordsForUpdate != null)//if (pickedClassEntity != null && pickedWeek == null && ProgressRecords != null)
 {
 
 
@@ -22,11 +22,11 @@
             <tbody>
                 @{
                     var sIterator = -1;
-                    var tiIterator = -1;
-
                     @foreach (var student in pickedClassEntity.Students)
                     {
                         sIterator++;
+
+                        var tiIterator = -1;
                         <tr>
                             <td>@student.Name</td>
                             @foreach (var trackedItem in pickedClassEntity.TrackedItems)
@@ -36,7 +36,7 @@
 
                                 <td>
                                     <ProgressInput thisProgressRecord="@thisProgressRecord"></ProgressInput>
-                                    <input type="number" @bind-value="@thisProgressRecord.Progress">
+                                    @*<input type="number" @bind-value="@thisProgressRecord.Progress">*@
                                 </td>
                             }
                         </tr>
@@ -69,16 +69,7 @@ else
         }
     </ul>
 
-    <h3 style="color:blue">Week @pickedWeek.Number</h3>
-    <div>@pickedWeek.Number</div>
-    @if(newData != null)
-    {
-        <div>SUCCESS</div>
-    }
-    else
-    {
-        <div>FAILURE</div>
-    }
+    <h3 style="color:blue"> Week @pickedWeek.Number</h3>
 }
 
 
@@ -93,10 +84,13 @@ else
     protected IEnumerable<ProgressRecordDto> ProgressRecords { get; set; }
     protected ProgressRecordForCreationDto[,] ProgressRecordsForUpdate { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private bool firstRender = true;
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (pickedWeek.Number > 0)
+        if (pickedWeek.Number > 0)// && firstRender)
         {
+            await Task.Delay(1);
             ProgressRecords = await _progressRecordDataService.GetProgressRecordsForClassEntityAndWeek(pickedClassEntity.OwnerIdentityName, pickedWeek.Id);
 
             var studentCount = pickedClassEntity.Students.Count();
@@ -104,11 +98,10 @@ else
             ProgressRecordsForUpdate = new ProgressRecordForCreationDto[studentCount, trackedItemCount];
 
             var sIterator = -1;
-            var tiIterator = -1;
             foreach (var student in pickedClassEntity.Students)
             {
                 sIterator++;
-
+                var tiIterator = -1;
                 foreach (var trackedItem in pickedClassEntity.TrackedItems)
                 {
                     tiIterator++;
@@ -130,9 +123,10 @@ else
                 }
             }
 
-
+            firstRender = false;
+            StateHasChanged();
         }
-        StateHasChanged();
+
     }
     public async void Dialog_OnDialogClose()
     {
