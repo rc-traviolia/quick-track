@@ -9,7 +9,7 @@ namespace QuickTrackWeb.EmbeddedApi.Services
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         public DbSet<ClassEntity> ClassEntities { get; set; }

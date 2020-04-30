@@ -17,6 +17,11 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\bookshelf.jpg" />
+    <Content Remove="wwwroot\favicon.ico" />
+    <Content Remove="wwwroot\fonts\ABeeZee-Regular.ttf" />
+    <Content Remove="wwwroot\fonts\ApplestormChalkboard-PdPP.otf" />
+    <Content Remove="wwwroot\fonts\chawp.otf" />
+    <Content Remove="wwwroot\fonts\Dustyerasers-vO09.ttf" />
     <Content Remove="wwwroot\images\bookshelf.jpg" />
     <Content Remove="wwwroot\images\brand-dropshadow-left.png" />
     <Content Remove="wwwroot\images\chalkboard.jpg" />
@@ -26,6 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="wwwroot\favicon.ico" />
+    <EmbeddedResource Include="wwwroot\fonts\ABeeZee-Regular.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\ApplestormChalkboard-PdPP.otf" />
+    <EmbeddedResource Include="wwwroot\fonts\chawp.otf" />
+    <EmbeddedResource Include="wwwroot\fonts\Dustyerasers-vO09.ttf" />
     <EmbeddedResource Include="wwwroot\images\brand-dropshadow-left.png" />
     <EmbeddedResource Include="wwwroot\images\chalkboard.jpg" />
   </ItemGroup>
