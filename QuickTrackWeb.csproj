@@ -18,15 +18,10 @@
   <ItemGroup>
     <Content Remove="wwwroot\css\bookshelf.jpg" />
     <Content Remove="wwwroot\images\brand-dropshadow-left.png" />
-    <Content Remove="wwwroot\SaveFile.js" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\images\brand-dropshadow-left.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="wwwroot\SaveFile.js" />
   </ItemGroup>
 
   <ItemGroup>
