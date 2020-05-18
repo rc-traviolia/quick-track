@@ -96,7 +96,9 @@ else
             ProgressRecordsForUpdate = new ProgressRecordForCreationDto[studentCount, trackedItemCount];
 
             var sIterator = -1;
-            foreach (var student in pickedClassEntity.Students.ToList().OrderBy(x => x.Name))
+
+            var tempList = pickedClassEntity.Students.ToList().OrderBy(x => x.Name);
+            foreach (var student in tempList)
             {
                 sIterator++;
                 var tiIterator = -1;
