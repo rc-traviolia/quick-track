@@ -30,7 +30,7 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
         public ClassEntity GetClassEntity(string ownerIdentityName)
         {
             var result = _context.ClassEntities.Where(c => c.OwnerIdentityName == ownerIdentityName)
-                .Include(y => y.Students)
+                .Include(y => y.Students.OrderBy(x=> x.Name))
                 .Include(y => y.Weeks)
                 .Include(y => y.TrackedItems)
                 .FirstOrDefault();
@@ -70,7 +70,7 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
         {
             //This maintains the cascase delete. 
             var foundClassEntity = _context.ClassEntities.Where(e => e.OwnerIdentityName == loggedInUserName)
-                .Include(y => y.Students)
+                .Include(y => y.Students.OrderBy(x=>x.Name))
                 .Include(y => y.ProgressRecords)
                 .Include(y => y.Weeks)
                 .Include(y => y.TrackedItems)
