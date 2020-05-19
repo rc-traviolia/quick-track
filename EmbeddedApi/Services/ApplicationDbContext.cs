@@ -25,38 +25,38 @@ namespace QuickTrackWeb.EmbeddedApi.Services
                 .HasMany(a => a.ProgressRecords)
                 .WithOne(b => b.ClassEntity)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Student>()
                 .HasMany(a => a.ProgressRecords)
                 .WithOne(b => b.Student)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TrackedItem>()
                 .HasMany(a => a.ProgressRecords)
                 .WithOne(b => b.TrackedItem)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Week>()
                 .HasMany(a => a.ProgressRecords)
                 .WithOne(b => b.Week)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ClassEntity>()
                 .HasMany(a => a.Students)
                 .WithOne(b => b.ClassEntity)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ClassEntity>()
                 .HasMany(a => a.TrackedItems)
                 .WithOne(b => b.ClassEntity)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ClassEntity>()
                 .HasMany(a => a.Weeks)
                 .WithOne(b => b.ClassEntity)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             //BELOW MIGHT WORK! ---> https://entityframeworkcore.com/knowledge-base/34768976/specifying-on-delete-no-action-in-entity-framework-7-
             //foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
