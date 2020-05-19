@@ -22,7 +22,8 @@
             <tbody>
                 @{
                     var sIterator = -1;
-                    @foreach (var student in pickedClassEntity.Students)
+                    var tempList = pickedClassEntity.Students.ToList().OrderBy(x => x.Name);
+                    @foreach (var student in tempList)
                     {
                         sIterator++;
 
