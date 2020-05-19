@@ -117,7 +117,15 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
 
         public void DeleteStudent(Student studentToDelete)
         {
-            _context.Students.Remove(studentToDelete);
+            //This maintains the cascase delete. 
+            var foundStudent = _context.Students.Where(e => e.Id == studentToDelete.Id)
+                .Include(y => y.ProgressRecords)
+                .FirstOrDefault();
+
+            if (foundStudent == null) return;
+
+            _context.Students.Remove(foundStudent);
+
         }
 
         public IEnumerable<TrackedItem> GetAllTrackedItemsFromClass(string classEntityOwnerIdentityName)
@@ -150,7 +158,15 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
 
         public void DeleteTrackedItem(TrackedItem trackedItemToDelete)
         {
-            _context.TrackedItems.Remove(trackedItemToDelete);
+            //This maintains the cascase delete. 
+            var foundTrackedItem = _context.TrackedItems.Where(e => e.Id == trackedItemToDelete.Id)
+                .Include(y => y.ProgressRecords)
+                .FirstOrDefault();
+
+            if (foundTrackedItem == null) return;
+
+            _context.TrackedItems.Remove(foundTrackedItem);
+
         }
 
         public IEnumerable<Week> GetAllWeeksFromClass(string classEntityOwnerIdentityName)
@@ -183,7 +199,15 @@ namespace QuickTrackWeb.EmbeddedApi.Repository
 
         public void DeleteWeek(Week weekToDelete)
         {
-            _context.Weeks.Remove(weekToDelete);
+            //This maintains the cascase delete. 
+            var foundWeek = _context.Weeks.Where(e => e.Id == weekToDelete.Id)
+                .Include(y => y.ProgressRecords)
+                .FirstOrDefault();
+
+            if (foundWeek == null) return;
+
+            _context.Weeks.Remove(foundWeek);
+
         }
 
         public ProgressRecord GetProgressRecord(int progressRecordId)
